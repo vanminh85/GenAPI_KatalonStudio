@@ -1,0 +1,6 @@
+{
+	"code": "test_account",
+	"email": "test@example.com",
+	"first_name": "John",
+	"last_name": "Doe"
+}

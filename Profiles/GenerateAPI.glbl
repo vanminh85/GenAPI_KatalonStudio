@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalVariableEntities>
+   <description></description>
+   <name>GenerateAPI</name>
+   <tag></tag>
+   <defaultProfile>true</defaultProfile>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'Nzg2YjY4Y2U0NmNhNGMyYThmODMyZGM3M2E3NTYzZTQ6'</initValue>
+      <name>katalon_ai_api_auth_value</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'https://testops.staging.katalon.com/api/v1/users/token'</initValue>
+      <name>url</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'https://v3.recurly.com'</initValue>
+      <name>base_url</name>
+   </GlobalVariableEntity>
+</GlobalVariableEntities>
