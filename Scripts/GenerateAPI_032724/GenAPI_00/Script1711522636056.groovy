@@ -54,6 +54,6 @@ def create_account_status_code = create_account_response.getStatusCode()
 WSBuiltInKeywords.verifyResponseStatusCode(create_account_response, 201)
 
 def replaceSuffixWithUUID(payload) {
-	replacedString = payload.replaceAll('unique__', uuid)
+	replacedString = payload.replaceAll('__unique__', uuid)
 	return replacedString
 }

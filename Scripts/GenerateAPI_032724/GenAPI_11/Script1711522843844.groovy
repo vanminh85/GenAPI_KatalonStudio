@@ -4,7 +4,6 @@ import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -31,25 +30,27 @@ uuid = UUID.randomUUID().toString()
 def base_url = "https://v3.recurly.com"
 
 // Step 1: Create a new account without providing a required field
-def account_payload = """
+account_payload = """
 {
-    "username": "test_account__unique__",
-    "email": "test@example.com",
-    "preferred_locale": "en-US",
-    "preferred_time_zone": "America/Los_Angeles",
-    "cc_emails": "test_cc@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
-    "company": "Test Company",
-    "tax_exempt": false,
-    "address": {
-        "phone": "1234567890",
-        "street1": "123 Main St",
-        "city": "Los Angeles",
-        "region": "CA",
-        "postal_code": "90001",
-        "country": "US"
-    }
+	    "acquisition": {
+		    "username": "test_account",
+		    "email": "test@example.com",
+		    "preferred_locale": "en-US",
+		    "preferred_time_zone": "America/Los_Angeles",
+		    "cc_emails": "test_cc@example.com",
+		    "first_name": "John",
+		    "last_name": "Doe",
+		    "company": "Test Company",
+		    "tax_exempt": false,
+		    "address": {
+		        "phone": "1234567890",
+		        "street1": "123 Main St",
+		        "city": "Los Angeles",
+		        "region": "CA",
+		        "postal_code": "90001",
+		        "country": "US"
+	    }
+   }
 }
 """
 
@@ -63,6 +64,7 @@ addContentTypeHeader(request)
 
 def response = WSBuiltInKeywords.sendRequest(request)
 WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
+println(response.getStatusCode())
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

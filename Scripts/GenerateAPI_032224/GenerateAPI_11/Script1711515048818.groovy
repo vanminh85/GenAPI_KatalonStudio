@@ -16,12 +16,12 @@ def addAuthHeader(request) {
 }
 
 def addAcceptHeader(request) {
-	def accept_header = new TestObjectProperty("Accept", ConditionType.EQUALS, "application/vnd.recurly.v2021-02-25")
+	accept_header = new TestObjectProperty("Accept", ConditionType.EQUALS, "application/vnd.recurly.v2021-02-25")
 	request.getHttpHeaderProperties().add(accept_header)
 }
 
 def addContentTypeHeader(request) {
-	contentTypeHeader = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	def contentTypeHeader = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
 	request.getHttpHeaderProperties().add(contentTypeHeader)
 }
 

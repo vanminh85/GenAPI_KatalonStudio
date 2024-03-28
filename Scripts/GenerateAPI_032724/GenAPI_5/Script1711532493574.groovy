@@ -11,9 +11,14 @@ import groovy.json.JsonOutput
 def addAuthHeader(request) {
 	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, "Basic " + authToken)
 		request.getHttpHeaderProperties().add(auth_header)
 	}
+}
+
+def addAcceptHeader(request) {
+	def accept_header = new TestObjectProperty("Accept", ConditionType.EQUALS, "application/vnd.recurly.v2021-02-25")
+	request.getHttpHeaderProperties().add(accept_header)
 }
 
 def addContentTypeHeader(request) {
@@ -27,7 +32,7 @@ def base_url = "https://v3.recurly.com"
 
 // Step 1: Create a new account with a non-existent parent account
 def account_payload = [
-	"code": "test_account",
+	"code": "test_account__unique__",
 	"parent_account_id": "non_existent_parent_account"
 ]
 
@@ -37,6 +42,7 @@ create_account_request.setRestRequestMethod("POST")
 create_account_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
 
 addAuthHeader(create_account_request)
+addAcceptHeader(create_account_request)
 addContentTypeHeader(create_account_request)
 
 def create_account_response = WSBuiltInKeywords.sendRequest(create_account_request)
