@@ -29,15 +29,28 @@ uuid = UUID.randomUUID().toString()
 
 def base_url = "https://v3.recurly.com"
 
+/*
 def account_payload = [
-	"email": "invalid_email_format__unique__",
+	"email": "invalid_email_format",
 	"first_name": "John",
 	"last_name": "Doe"
 ]
+*/
+
+def account_payload = """
+{
+  "acquisition": {
+    "email": "invalid_email_format__unique__",
+    "first_name": "John",
+    "last_name": "Doe"
+  }
+}
+"""
 
 def create_account_url = base_url + "/accounts"
 def request = new RequestObject()
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
+//request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
+request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(account_payload)))
 request.setRestUrl(create_account_url)
 request.setRestRequestMethod("POST")
 addAuthHeader(request)
