@@ -1,19 +1,55 @@
-import static com.kms.katalon.core.checkpoint.CheckpointFactory.findCheckpoint
-import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
-import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
-import static com.kms.katalon.core.testobject.ObjectRepository.findTestObject
-import static com.kms.katalon.core.testobject.ObjectRepository.findWindowsObject
-import com.kms.katalon.core.checkpoint.Checkpoint as Checkpoint
-import com.kms.katalon.core.cucumber.keyword.CucumberBuiltinKeywords as CucumberKW
-import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
-import com.kms.katalon.core.model.FailureHandling as FailureHandling
-import com.kms.katalon.core.testcase.TestCase as TestCase
-import com.kms.katalon.core.testdata.TestData as TestData
-import com.kms.katalon.core.testng.keyword.TestNGBuiltinKeywords as TestNGKW
-import com.kms.katalon.core.testobject.TestObject as TestObject
-import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
-import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
-import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
-import internal.GlobalVariable as GlobalVariable
-import org.openqa.selenium.Keys as Keys
+import internal.GlobalVariable
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
+import com.kms.katalon.core.testobject.ConditionType
+import com.kms.katalon.core.testobject.TestObjectProperty
+import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
 
+import groovy.json.JsonOutput
+
+def addAuthHeader(request) {
+	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	if (authToken) {
+		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		request.getHttpHeaderProperties().add(auth_header)
+	}
+}
+
+def addContentTypeHeader(request) {
+	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	request.getHttpHeaderProperties().add(content_type_header)
+}
+
+uuid = UUID.randomUUID().toString()
+
+def url = "https://petstore.swagger.io/v2/user/{username}"
+url = url.replace("{username}", "TestUser")
+def payload = [
+	"id": 0,
+	"username": "TestUser",
+	"firstName": "",
+	"lastName": "",
+	"email": "",
+	"password": "",
+	"phone": "",
+	"userStatus": 1
+]
+def headers = [
+	"Content-Type": "application/json"
+]
+def request = new RequestObject()
+request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(payload))))
+request.setRestUrl(url)
+request.setRestRequestMethod("POST")
+addAuthHeader(request)
+addContentTypeHeader(request)
+
+def response = WSBuiltInKeywords.sendRequest(request)
+WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
+
+println("Test case passed")
+
+def replaceSuffixWithUUID(payload) {
+	replacedString = payload.replaceAll('unique__', uuid)
+	return replacedString
+}
