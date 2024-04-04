@@ -1,9 +1,11 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
 	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
@@ -20,19 +22,43 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://petstore.swagger.io/v2"
+def request1 = new RequestObject()
+request1.setRestUrl("https://petstore.swagger.io/v2/category")
+request1.setRestRequestMethod("POST")
+addAuthHeader(request1)
+addContentTypeHeader(request1)
+def bodyContent1 = new HttpTextBodyContent(replaceSuffixWithUUID('{"id": 2, "name": "Test Category 2"}'))
+request1.setBodyContent(bodyContent1)
+def response1 = WSBuiltInKeywords.sendRequest(request1)
+WSBuiltInKeywords.verifyResponseStatusCode(response1, 200)
 
-def request = new RequestObject()
-request.setRestUrl(base_url + "/pet/999")
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
+def petId
 
-def response = WSBuiltInKeywords.sendRequest(request)
-WSBuiltInKeywords.verifyResponseStatusCode(response, 404)
+if (response1.getStatusCode() == 200) {
+	petId = response1.getResponseText().id
+}
+
+def request2 = new RequestObject()
+request2.setRestUrl("https://petstore.swagger.io/v2/pet")
+request2.setRestRequestMethod("POST")
+addAuthHeader(request2)
+addContentTypeHeader(request2)
+def bodyContent2 = new HttpTextBodyContent(replaceSuffixWithUUID('{"name": "Test Pet 2", "photoUrls": ["url1", "url2"], "category": {"id": 2, "name": "Test Category 2"}}'))
+request2.setBodyContent(bodyContent2)
+def response2 = WSBuiltInKeywords.sendRequest(request2)
+WSBuiltInKeywords.verifyResponseStatusCode(response2, 200)
+
+def request3 = new RequestObject()
+request3.setRestUrl("https://petstore.swagger.io/v2/pet/${petId}")
+request3.setRestRequestMethod("POST")
+addAuthHeader(request3)
+addContentTypeHeader(request3)
+def bodyContent3 = new HttpTextBodyContent(replaceSuffixWithUUID('{"invalidField": "Invalid Value"}'))
+request3.setBodyContent(bodyContent3)
+def response3 = WSBuiltInKeywords.sendRequest(request3)
+WSBuiltInKeywords.verifyResponseStatusCode(response3, 400)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
 	return replacedString
 }
-
