@@ -1,59 +1,11 @@
+import internal.GlobalVariable
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-import internal.GlobalVariable
-
+import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-
-// Step 1: Create a new pet with tags
-def payload = [
-	"id": 1,
-	"category": [
-		"id": 1,
-		"name": "category__unique__"
-	],
-	"name": "pet__unique__",
-	"photoUrls": ["photoUrl1", "photoUrl2"],
-	"tags": [
-		[
-			"id": 1,
-			"name": "tag1__unique__"
-		],
-		[
-			"id": 2,
-			"name": "tag2__unique__"
-		]
-	],
-	"status": "available"
-]
-
-def request1 = new RequestObject()
-request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(payload))))
-request1.setRestUrl("https://petstore.swagger.io/v2/pet")
-request1.setRestRequestMethod("POST")
-addContentTypeHeader(request1)
-addAuthHeader(request1)
-def response1 = WSBuiltInKeywords.sendRequest(request1)
-WSBuiltInKeywords.verifyResponseStatusCode(response1, 200)
-
-// Step 2: Call the API POST /pet/findByTags with invalid tags
-def invalid_tags = ["invalid_tag1", "invalid_tag2"]
-
-def request2 = new RequestObject()
-request2.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(invalid_tags))))
-request2.setRestUrl("https://petstore.swagger.io/v2/pet/findByTags")
-request2.setRestRequestMethod("POST")
-addContentTypeHeader(request2)
-addAuthHeader(request2)
-def response2 = WSBuiltInKeywords.sendRequest(request2)
-WSBuiltInKeywords.verifyResponseStatusCode(response2, 400)
-
-// Step 3: Verify that the response status code is 400
-WSBuiltInKeywords.verifyResponseStatusCode(response2, 400)
-
-println("Test case executed successfully.")
 
 def addAuthHeader(request) {
 	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
@@ -70,8 +22,37 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
+// Step 1: Create a new Category
+def categoryRequest = new RequestObject()
+categoryRequest.setRestUrl("https://petstore.swagger.io/v2/category")
+categoryRequest.setRestRequestMethod("POST")
+addAuthHeader(categoryRequest)
+addContentTypeHeader(categoryRequest)
+def categoryPayload = '{"id": 1, "name": "category_name__unique__"}'
+categoryRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(categoryPayload)))
+def categoryResponse = WSBuiltInKeywords.sendRequest(categoryRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(categoryResponse, 200)
+
+// Step 2: Create a new Pet
+def petRequest = new RequestObject()
+petRequest.setRestUrl("https://petstore.swagger.io/v2/pet")
+petRequest.setRestRequestMethod("POST")
+addAuthHeader(petRequest)
+addContentTypeHeader(petRequest)
+def petPayload = '{"name": "pet_name__unique__", "photoUrls": ["url1", "url2"], "category": {"id": 1, "name": "category_name__unique__"}, "tags": [{"id": 1, "name": "tag_name__unique__"}]}'
+petRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(petPayload)))
+def petResponse = WSBuiltInKeywords.sendRequest(petRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(petResponse, 200)
+
+// Step 3: Execute POST /pet/findByTags with invalid tags
+def findByTagsRequest = new RequestObject()
+findByTagsRequest.setRestUrl("https://petstore.swagger.io/v2/pet/findByTags?tags=invalidTag")
+findByTagsRequest.setRestRequestMethod("POST")
+addAuthHeader(findByTagsRequest)
+def findByTagsResponse = WSBuiltInKeywords.sendRequest(findByTagsRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(findByTagsResponse, 400)
+
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
 	return replacedString
 }
-
