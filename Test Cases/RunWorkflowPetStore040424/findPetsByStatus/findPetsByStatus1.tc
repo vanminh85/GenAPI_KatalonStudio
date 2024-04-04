@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>findPetsByStatus1</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ca3e6338-ffee-48ff-9f10-bb19c11554fa</testCaseGuid>
+</TestCaseEntity>
