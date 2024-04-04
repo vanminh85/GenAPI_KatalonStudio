@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,46 +22,19 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def category_payload = JsonOutput.toJson(["name": "Test Category"])
-def category_request = new RequestObject()
-category_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(category_payload)))
-category_request.setRestUrl("https://petstore.swagger.io/v2/category")
-category_request.setRestRequestMethod("POST")
-addAuthHeader(category_request)
-addContentTypeHeader(category_request)
+def request1 = new RequestObject()
+request1.setRestUrl("https://petstore.swagger.io/v2/pet")
+request1.setRestRequestMethod("POST")
+addAuthHeader(request1)
+addContentTypeHeader(request1)
 
-def category_response = WSBuiltInKeywords.sendRequest(category_request)
-WSBuiltInKeywords.verifyResponseStatusCode(category_response, 200)
+def payload1 = '{"photoUrls":["url1","url2"],"category":{"id":1,"name":"Test Category"}}'
+request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload1)))
 
-def category_id = new JsonSlurper().parseText(category_response.getResponseText())["id"]
-
-def pet_payload = JsonOutput.toJson(["name": "Test Pet", "photoUrls": ["http://example.com/image.jpg"]])
-def pet_request = new RequestObject()
-pet_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(pet_payload)))
-pet_request.setRestUrl("https://petstore.swagger.io/v2/pet")
-pet_request.setRestRequestMethod("POST")
-addAuthHeader(pet_request)
-addContentTypeHeader(pet_request)
-
-def pet_response = WSBuiltInKeywords.sendRequest(pet_request)
-WSBuiltInKeywords.verifyResponseStatusCode(pet_response, 200)
-
-def pet_id = new JsonSlurper().parseText(pet_response.getResponseText())["id"]
-
-def update_pet_request = new RequestObject()
-update_pet_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(pet_payload)))
-update_pet_request.setRestUrl("https://petstore.swagger.io/v2/pet/${pet_id}")
-update_pet_request.setRestRequestMethod("POST")
-addAuthHeader(update_pet_request)
-addContentTypeHeader(update_pet_request)
-
-def update_pet_response = WSBuiltInKeywords.sendRequest(update_pet_request)
-WSBuiltInKeywords.verifyResponseStatusCode(update_pet_response, 400)
-
-WSBuiltInKeywords.verifyResponseStatusCode(update_pet_response, 400)
+def response1 = WSBuiltInKeywords.sendRequest(request1)
+WSBuiltInKeywords.verifyResponseStatusCode(response1, 405)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
 	return replacedString
 }
-
