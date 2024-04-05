@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,17 +22,21 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def user_payload = [
-	"firstName": "John",
-	"lastName": "Doe",
-	"email": "john.doe@example.com",
-	"password": "password123",
-	"phone": "1234567890",
-	"userStatus": 1
-]
+def user_payload = '''
+{
+    "id": 1,
+    "username": "user1__unique__",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "johndoe@example.com",
+    "password": "password123",
+    "phone": "1234567890",
+    "userStatus": 1
+}
+'''
 
 def createWithListRequest = new RequestObject()
-createWithListRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson([user_payload]))))
+createWithListRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(user_payload)))
 createWithListRequest.setRestUrl("https://petstore.swagger.io/v2/user/createWithList")
 createWithListRequest.setRestRequestMethod("POST")
 addAuthHeader(createWithListRequest)
@@ -42,18 +45,17 @@ addContentTypeHeader(createWithListRequest)
 def createWithListResponse = WSBuiltInKeywords.sendRequest(createWithListRequest)
 WSBuiltInKeywords.verifyResponseStatusCode(createWithListResponse, 200)
 
-def username = user_payload["username"]
+def createByUsernameRequest = new RequestObject()
+createByUsernameRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(user_payload)))
+createByUsernameRequest.setRestUrl("https://petstore.swagger.io/v2/user/" + new JsonSlurper().parseText(user_payload).username)
+createByUsernameRequest.setRestRequestMethod("POST")
+addAuthHeader(createByUsernameRequest)
+addContentTypeHeader(createByUsernameRequest)
 
-def getUserRequest = new RequestObject()
-getUserRequest.setRestUrl("https://petstore.swagger.io/v2/user/${username}")
-getUserRequest.setRestRequestMethod("POST")
-addAuthHeader(getUserRequest)
-addContentTypeHeader(getUserRequest)
+def createByUsernameResponse = WSBuiltInKeywords.sendRequest(createByUsernameRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(createByUsernameResponse, 400)
 
-def getUserResponse = WSBuiltInKeywords.sendRequest(getUserRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(getUserResponse, 400)
-
-WSBuiltInKeywords.verifyResponseStatusCode(getUserResponse, 400)
+println(createByUsernameResponse.getStatusCode())
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

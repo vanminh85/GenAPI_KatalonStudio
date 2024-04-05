@@ -1,57 +1,62 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
 		request.getHttpHeaderProperties().add(auth_header)
 	}
 }
 
 def addContentTypeHeader(request) {
-	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
 	request.getHttpHeaderProperties().add(content_type_header)
 }
 
 uuid = UUID.randomUUID().toString()
 
-def create_user_url = "https://petstore.swagger.io/v2/user/createWithList"
-def create_user_request = new RequestObject()
-create_user_request.setRestUrl(create_user_url)
-create_user_request.setRestRequestMethod("POST")
-addContentTypeHeader(create_user_request)
-def user_payload = [
-	"id": 1,
-	"username": "test_user__unique__",
-	"firstName": "John",
-	"lastName": "Doe",
-	"email": "johndoe@example.com",
-	"password": "password123",
-	"phone": "1234567890",
-	"userStatus": 1
-]
-create_user_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson([user_payload]))))
+// Step 1: Create a new User object with a valid 'username' field
+user_payload = '''
+{
+    "id": 1,
+    "username": "test_username__unique__",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "password": "password123",
+    "phone": "1234567890",
+    "userStatus": 1
+}
+'''
 
-WSBuiltInKeywords.sendRequest(create_user_request)
+request1 = new RequestObject()
+request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(user_payload)))
+request1.setRestUrl("https://petstore.swagger.io/v2/user/createWithList")
+request1.setRestRequestMethod("POST")
+addAuthHeader(request1)
+addContentTypeHeader(request1)
 
-def post_url = "https://petstore.swagger.io/v2/user/${uuid}"
-def post_request = new RequestObject()
-post_request.setRestUrl(post_url)
-post_request.setRestRequestMethod("POST")
-addAuthHeader(post_request)
+response1 = WSBuiltInKeywords.sendRequest(request1)
+WSBuiltInKeywords.verifyResponseStatusCode(response1, 200)
 
-WSBuiltInKeywords.sendRequest(post_request)
+// Step 2: Send a POST request to /user/{username} with the created User object
+request2 = new RequestObject()
+request2.setRestUrl("https://petstore.swagger.io/v2/user/" + new JsonSlurper().parseText(user_payload).username)
+request2.setRestRequestMethod("GET")
+addAuthHeader(request2)
 
-def verify_response = WSBuiltInKeywords.verifyResponseStatusCode(post_request.getResponseObject(), 200)
-assert verify_response
+response2 = WSBuiltInKeywords.sendRequest(request2)
+WSBuiltInKeywords.verifyResponseStatusCode(response2, 200)
+
+// Step 3: Verify that the response status code is 200
+assert response2.getStatusCode() == 200
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
