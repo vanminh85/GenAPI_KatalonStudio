@@ -1,8 +1,8 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -22,62 +22,35 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def category_payload = JsonOutput.toJson([
-	"name": "Test Category__unique__"
-])
+def categoryRequest = new RequestObject()
+categoryRequest.setRestUrl("https://petstore.swagger.io/v2/pet")
+categoryRequest.setRestRequestMethod("POST")
+addAuthHeader(categoryRequest)
+addContentTypeHeader(categoryRequest)
+def categoryPayload = '{"id": 1, "name": "Test Category__unique__"}'
+categoryRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(categoryPayload)))
+def categoryResponse = WSBuiltInKeywords.sendRequest(categoryRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(categoryResponse, 200)
 
-def category_request = new RequestObject()
-category_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(category_payload)))
-category_request.setRestUrl("https://petstore.swagger.io/v2/pet")
-category_request.setRestRequestMethod("POST")
-addAuthHeader(category_request)
-addContentTypeHeader(category_request)
+def petRequest = new RequestObject()
+petRequest.setRestUrl("https://petstore.swagger.io/v2/pet")
+petRequest.setRestRequestMethod("POST")
+addAuthHeader(petRequest)
+addContentTypeHeader(petRequest)
+def petPayload = '{"id": 1, "category": {"id": 1, "name": "Test Category__unique__"}, "name": "Test Pet__unique__", "photoUrls": ["url1", "url2"], "status": "available"}'
+petRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(petPayload)))
+def petResponse = WSBuiltInKeywords.sendRequest(petRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(petResponse, 200)
 
-def category_response = WSBuiltInKeywords.sendRequest(category_request)
-WSBuiltInKeywords.verifyResponseStatusCode(category_response, 200)
-
-def category_id = new JsonSlurper().parseText(category_response.getResponseText())["id"]
-
-def pet_payload = JsonOutput.toJson([
-	"name": "Test Pet__unique__",
-	"photoUrls": ["http://test.com/image.jpg"],
-	"category": [
-		"id": category_id,
-		"name": "Test Category__unique__"
-	]
-])
-
-def pet_request = new RequestObject()
-pet_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(pet_payload)))
-pet_request.setRestUrl("https://petstore.swagger.io/v2/pet")
-pet_request.setRestRequestMethod("POST")
-addAuthHeader(pet_request)
-addContentTypeHeader(pet_request)
-
-def pet_response = WSBuiltInKeywords.sendRequest(pet_request)
-WSBuiltInKeywords.verifyResponseStatusCode(pet_response, 200)
-
-def pet_id = new JsonSlurper().parseText(pet_response.getResponseText())["id"]
-
-def order_payload = JsonOutput.toJson([
-	"petId": pet_id,
-	"quantity": 1,
-	"shipDate": new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-	"status": "placed",
-	"complete": true
-])
-
-def order_request = new RequestObject()
-order_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(order_payload)))
-order_request.setRestUrl("https://petstore.swagger.io/v2/store/order")
-order_request.setRestRequestMethod("POST")
-addAuthHeader(order_request)
-addContentTypeHeader(order_request)
-
-def order_response = WSBuiltInKeywords.sendRequest(order_request)
-WSBuiltInKeywords.verifyResponseStatusCode(order_response, 200)
-
-WSBuiltInKeywords.verifyResponseStatusCode(order_response, 200)
+def orderRequest = new RequestObject()
+orderRequest.setRestUrl("https://petstore.swagger.io/v2/store/order")
+orderRequest.setRestRequestMethod("POST")
+addAuthHeader(orderRequest)
+addContentTypeHeader(orderRequest)
+def orderPayload = '{"id": 1, "petId": 1, "quantity": 1, "shipDate": "2022-01-01T00:00:00Z", "status": "placed", "complete": false}'
+orderRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(orderPayload)))
+def orderResponse = WSBuiltInKeywords.sendRequest(orderRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(orderResponse, 200)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

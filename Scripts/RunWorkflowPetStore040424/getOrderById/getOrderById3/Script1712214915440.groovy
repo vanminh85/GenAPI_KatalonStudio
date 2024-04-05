@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,36 +22,16 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def order_payload = [
-	"petId": 0,
-	"quantity": 1,
-	"shipDate": "2022-01-01T00:00:00Z",
-	"status": "placed",
-	"complete": true
-]
+def payload_step1 = '{"quantity": 1, "shipDate": "2022-01-01T12:00:00.000Z", "status": "placed", "complete": false}'
+def request_step1 = new RequestObject()
+request_step1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload_step1)))
+request_step1.setRestUrl("https://petstore.swagger.io/v2/store/order")
+request_step1.setRestRequestMethod("POST")
+addAuthHeader(request_step1)
+addContentTypeHeader(request_step1)
 
-def createOrderRequest = new RequestObject()
-createOrderRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(order_payload))))
-createOrderRequest.setRestUrl("https://petstore.swagger.io/v2/store/order")
-createOrderRequest.setRestRequestMethod("POST")
-addAuthHeader(createOrderRequest)
-addContentTypeHeader(createOrderRequest)
-
-def createOrderResponse = WSBuiltInKeywords.sendRequest(createOrderRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(createOrderResponse, 200)
-
-def order_id = new JsonSlurper().parseText(createOrderResponse.getResponseText())["id"]
-
-def updateOrderRequest = new RequestObject()
-updateOrderRequest.setRestUrl("https://petstore.swagger.io/v2/store/order/${order_id}")
-updateOrderRequest.setRestRequestMethod("POST")
-addAuthHeader(updateOrderRequest)
-addContentTypeHeader(updateOrderRequest)
-
-def updateOrderResponse = WSBuiltInKeywords.sendRequest(updateOrderRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(updateOrderResponse, 400)
-
-WSBuiltInKeywords.verifyResponseStatusCode(updateOrderResponse, 400)
+def response_step1 = WSBuiltInKeywords.sendRequest(request_step1)
+WSBuiltInKeywords.verifyResponseStatusCode(response_step1, 200)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

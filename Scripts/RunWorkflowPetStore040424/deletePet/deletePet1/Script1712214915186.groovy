@@ -8,55 +8,53 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
-	if (authToken) {
-		auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
-		request.getHttpHeaderProperties().add(auth_header)
-	}
+    def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+    if (authToken) {
+        def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+        request.getHttpHeaderProperties().add(auth_header)
+    }
 }
 
 def addContentTypeHeader(request) {
-	content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
-	request.getHttpHeaderProperties().add(content_type_header)
+    def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+    request.getHttpHeaderProperties().add(content_type_header)
 }
 
 uuid = UUID.randomUUID().toString()
 
 // Step 1: Create a new Category
-category_payload = '{"id": 1, "name": "Test Category"}'
-category_request = new RequestObject()
-category_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(category_payload)))
-category_request.setRestUrl("https://petstore.swagger.io/v2/category")
-category_request.setRestRequestMethod("POST")
-addAuthHeader(category_request)
-addContentTypeHeader(category_request)
-category_response = WSBuiltInKeywords.sendRequest(category_request)
-WSBuiltInKeywords.verifyResponseStatusCode(category_response, 200)
+def categoryRequest = new RequestObject()
+categoryRequest.setRestUrl("https://petstore.swagger.io/v2/category")
+categoryRequest.setRestRequestMethod("POST")
+addAuthHeader(categoryRequest)
+addContentTypeHeader(categoryRequest)
+def categoryPayload = '{"id": 1, "name": "Test Category__unique__"}'
+categoryRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(categoryPayload)))
+def categoryResponse = WSBuiltInKeywords.sendRequest(categoryRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(categoryResponse, 200)
 
-// Step 2: Create a new Pet with the created Category
-pet_payload = '{"name": "Test Pet", "photoUrls": ["url1", "url2"], "category": {"id": 1, "name": "Test Category"}}'
-pet_request = new RequestObject()
-pet_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(pet_payload)))
-pet_request.setRestUrl("https://petstore.swagger.io/v2/pet")
-pet_request.setRestRequestMethod("POST")
-addAuthHeader(pet_request)
-addContentTypeHeader(pet_request)
-pet_response = WSBuiltInKeywords.sendRequest(pet_request)
-WSBuiltInKeywords.verifyResponseStatusCode(pet_response, 200)
-pet_id = new JsonSlurper().parseText(pet_response.getResponseText())['id']
+// Step 2: Create a new Pet
+def petRequest = new RequestObject()
+petRequest.setRestUrl("https://petstore.swagger.io/v2/pet")
+petRequest.setRestRequestMethod("POST")
+addAuthHeader(petRequest)
+addContentTypeHeader(petRequest)
+def petPayload = '{"id": 1, "category": {"id": 1, "name": "Test Category__unique__"}, "name": "Test Pet__unique__", "photoUrls": ["url1", "url2"]}'
+petRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(petPayload)))
+def petResponse = WSBuiltInKeywords.sendRequest(petRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(petResponse, 200)
 
-// Step 3: Update the created Pet
-update_payload = '{"name": "Updated Test Pet", "status": "available"}'
-update_request = new RequestObject()
-update_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(update_payload)))
-update_request.setRestUrl("https://petstore.swagger.io/v2/pet/${pet_id}")
-update_request.setRestRequestMethod("POST")
-addAuthHeader(update_request)
-addContentTypeHeader(update_request)
-update_response = WSBuiltInKeywords.sendRequest(update_request)
-WSBuiltInKeywords.verifyResponseStatusCode(update_response, 200)
+// Step 3: Update the Pet with form data
+def updateRequest = new RequestObject()
+updateRequest.setRestUrl("https://petstore.swagger.io/v2/pet/1")
+updateRequest.setRestRequestMethod("POST")
+addAuthHeader(updateRequest)
+def updatePayload = '{"name": "Updated Pet Name", "status": "available"}'
+updateRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(updatePayload)))
+def updateResponse = WSBuiltInKeywords.sendRequest(updateRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(updateResponse, 200)
 
 def replaceSuffixWithUUID(payload) {
-	replacedString = payload.replaceAll('unique__', uuid)
-	return replacedString
+    replacedString = payload.replaceAll('unique__', uuid)
+    return replacedString
 }

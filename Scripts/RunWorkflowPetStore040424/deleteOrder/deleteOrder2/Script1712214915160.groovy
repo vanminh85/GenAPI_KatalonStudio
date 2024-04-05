@@ -1,10 +1,10 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
+import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
@@ -22,16 +22,16 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def payload = [:]
+def payload = '{"id": 1, "petId": 999, "quantity": 1, "shipDate": "2022-01-01T00:00:00Z", "status": "placed", "complete": false}'
 def request = new RequestObject()
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(payload))))
-request.setRestUrl("https://petstore.swagger.io/v2/store/order/0")
+request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload)))
+request.setRestUrl("https://petstore.swagger.io/v2/store/order/999")
 request.setRestRequestMethod("POST")
 addAuthHeader(request)
 addContentTypeHeader(request)
 
 def response = WSBuiltInKeywords.sendRequest(request)
-WSBuiltInKeywords.verifyResponseStatusCode(response, 404)
+WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
