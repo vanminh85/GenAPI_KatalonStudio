@@ -1,52 +1,54 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	authToken = GlobalVariable.katalon_ai_api_auth_value ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
-		request.getHttpHeaderProperties().add(auth_header)
+		authHeader = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		request.getHttpHeaderProperties().add(authHeader)
 	}
 }
 
 def addContentTypeHeader(request) {
-	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
-	request.getHttpHeaderProperties().add(content_type_header)
+	contentTypeHeader = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	request.getHttpHeaderProperties().add(contentTypeHeader)
 }
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
+// Step 1: Create a new account
+createAccountRequest = new RequestObject()
+createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
+createAccountRequest.setRestRequestMethod("POST")
+addAuthHeader(createAccountRequest)
+addContentTypeHeader(createAccountRequest)
+createAccountPayload = '{"code": "test_account__unique__", "email": "test@example.com", "first_name": "John", "last_name": "Doe"}'
+createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createAccountPayload)))
+createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
+createAccountId = new JsonSlurper().parseText(createAccountResponse.getResponseText()).get("id")
 
-// Step 1: Create a new account with missing required fields
-def account_payload = [
-	"code": "test_account",
-	"email": "test@example.com"
-]
+// Step 2: Prepare invalid data for the account update request
+invalidUpdateData = '{"username": "invalid_username"}'
 
-def request = new RequestObject()
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
-request.setRestUrl("${base_url}/accounts")
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
+// Step 3: Update the account with invalid data
+updateAccountRequest = new RequestObject()
+updateAccountRequest.setRestUrl("https://v3.recurly.com/accounts/" + createAccountId)
+updateAccountRequest.setRestRequestMethod("PUT")
+addAuthHeader(updateAccountRequest)
+addContentTypeHeader(updateAccountRequest)
+updateAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(invalidUpdateData)))
+updateAccountResponse = WSBuiltInKeywords.sendRequest(updateAccountRequest)
 
-def response = WSBuiltInKeywords.sendRequest(request)
-
-// Step 2: Verify that the response status code is 400
-WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
-
-println("Test passed!")
+// Step 4: Verify the response status code is 400
+WSBuiltInKeywords.verifyResponseStatusCode(updateAccountResponse, 400)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
 	return replacedString
 }
-

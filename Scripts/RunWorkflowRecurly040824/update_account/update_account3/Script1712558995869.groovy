@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,27 +22,25 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def createAccountUrl = "https://v3.recurly.com/accounts"
-def accountPayload = [
-	"email": "invalid_email_format",
-	"first_name": "John",
-	"last_name": "Doe"
-]
+def createAccountRequest = new RequestObject()
+def createAccountPayload = '{"code": "test_account__unique__", "email": "test@example.com", "first_name": "John", "last_name": "Doe"}'
+createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createAccountPayload)))
+createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
+createAccountRequest.setRestRequestMethod("POST")
+addAuthHeader(createAccountRequest)
+addContentTypeHeader(createAccountRequest)
+def createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(createAccountResponse, 201)
+def accountId = new JsonSlurper().parseText(createAccountResponse.getResponseText())["id"]
 
-def request = new RequestObject()
-request.setRestUrl(createAccountUrl)
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(accountPayload))))
-
-def response = WSBuiltInKeywords.sendRequest(request)
-WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
-
-println("Test case passed")
+def deactivateAccountRequest = new RequestObject()
+deactivateAccountRequest.setRestUrl("https://v3.recurly.com/accounts/" + accountId)
+deactivateAccountRequest.setRestRequestMethod("DELETE")
+addAuthHeader(deactivateAccountRequest)
+def deactivateResponse = WSBuiltInKeywords.sendRequest(deactivateAccountRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(deactivateResponse, 200)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
 	return replacedString
 }
-
