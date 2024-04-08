@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,31 +22,17 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
+def accountData = '{"code": "test_code__unique__"}'
 
-// Step 1: Create a new account with valid data
-def account_payload = [
-	"code": "test_account",
-	"first_name": "John",
-	"last_name": "Doe",
-	"email": "john.doe@example.com"
-]
+def request = new RequestObject()
+request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(accountData)))
+request.setRestUrl("https://v3.recurly.com/accounts")
+request.setRestRequestMethod("POST")
+addAuthHeader(request)
+addContentTypeHeader(request)
 
-def create_account_url = base_url + "/accounts"
-def create_account_request = new RequestObject()
-create_account_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
-create_account_request.setRestUrl(create_account_url)
-create_account_request.setRestRequestMethod("POST")
-addAuthHeader(create_account_request)
-addContentTypeHeader(create_account_request)
-
-def create_account_response = WSBuiltInKeywords.sendRequest(create_account_request)
-WSBuiltInKeywords.verifyResponseStatusCode(create_account_response, 201)
-
-// Step 2: Verify that the response status code is 201
-assert create_account_response.getStatusCode() == 201, "Response status code is not 201"
-
-println("Test case passed")
+def response = WSBuiltInKeywords.sendRequest(request)
+WSBuiltInKeywords.verifyResponseStatusCode(response, 201)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

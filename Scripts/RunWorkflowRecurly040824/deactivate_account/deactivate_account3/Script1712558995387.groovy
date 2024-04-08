@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,24 +22,29 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def createAccountUrl = "https://v3.recurly.com/accounts"
-def accountPayload = [
-	"email": "invalid_email_format",
-	"first_name": "John",
-	"last_name": "Doe"
-]
+// Step 1: Create a new account
+def createAccountRequest = new RequestObject()
+def createAccountPayload = '{"code": "test_account__unique__", "acquisition": {}, "external_accounts": [], "shipping_addresses": []}'
+createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createAccountPayload)))
+createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
+createAccountRequest.setRestRequestMethod("POST")
+addAuthHeader(createAccountRequest)
+addContentTypeHeader(createAccountRequest)
+def createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
+def account_id = new JsonSlurper().parseText(createAccountResponse.getResponseText())["id"]
 
-def request = new RequestObject()
-request.setRestUrl(createAccountUrl)
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(accountPayload))))
+// Step 2: Extract the account_id
+account_id = new JsonSlurper().parseText(createAccountResponse.getResponseText())["id"]
 
-def response = WSBuiltInKeywords.sendRequest(request)
-WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
+// Step 3: Send a GET request to /accounts/{account_id}
+def getAccountRequest = new RequestObject()
+getAccountRequest.setRestUrl("https://v3.recurly.com/accounts/" + account_id)
+getAccountRequest.setRestRequestMethod("GET")
+addAuthHeader(getAccountRequest)
+def getAccountResponse = WSBuiltInKeywords.sendRequest(getAccountRequest)
 
-println("Test case passed")
+// Step 4: Verify the response status code is 200
+WSBuiltInKeywords.verifyResponseStatusCode(getAccountResponse, 200)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
