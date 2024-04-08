@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,28 +22,24 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
+def existing_account_id = "existing_account_id__unique__"
 def base_url = "https://v3.recurly.com"
+def endpoint = "/accounts/${existing_account_id}"
+def url = base_url + endpoint
 
-// Step 1: Create a new account with a non-existent parent account
-def account_payload = [
-	"code": "test_account",
-	"parent_account_id": "non_existent_parent_account"
-]
+def request = new RequestObject()
+request.setRestUrl(url)
+request.setRestRequestMethod("DELETE")
+addAuthHeader(request)
+addContentTypeHeader(request)
 
-def create_account_url = base_url + "/accounts"
-def create_account_request = new RequestObject()
-create_account_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
-create_account_request.setRestUrl(create_account_url)
-create_account_request.setRestRequestMethod("POST")
-addAuthHeader(create_account_request)
-addContentTypeHeader(create_account_request)
+def response = WSBuiltInKeywords.sendRequest(request)
 
-def create_account_response = WSBuiltInKeywords.sendRequest(create_account_request)
-
-// Step 2: Verify that the response status code is 404
-WSBuiltInKeywords.verifyResponseStatusCode(create_account_response, 404)
-
-println("Test passed!")
+if (WSBuiltInKeywords.verifyResponseStatusCode(response, 200)) {
+	println("Test Passed: Response status code is 200")
+} else {
+	println("Test Failed: Response status code is not 200")
+}
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

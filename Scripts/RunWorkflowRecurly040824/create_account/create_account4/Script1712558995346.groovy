@@ -1,52 +1,38 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	authToken = GlobalVariable.katalon_ai_api_auth_value ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
-		request.getHttpHeaderProperties().add(auth_header)
+		authHeader = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		request.getHttpHeaderProperties().add(authHeader)
 	}
 }
 
 def addContentTypeHeader(request) {
-	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
-	request.getHttpHeaderProperties().add(content_type_header)
+	contentTypeHeader = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	request.getHttpHeaderProperties().add(contentTypeHeader)
 }
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
+def payload = '{"username": "test_username__unique__", "email": "test_email__unique__@example.com", "first_name": "Test", "last_name": "User"}'
 
-def account_code = "existing_account_code"
+def request = new RequestObject()
+request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload)))
+request.setRestUrl("https://v3.recurly.com/accounts/test_account_id")
+request.setRestRequestMethod("PUT")
+addAuthHeader(request)
+addContentTypeHeader(request)
 
-def account_payload = [
-	"code": account_code,
-	"email": "test@example.com",
-	"first_name": "John",
-	"last_name": "Doe"
-]
-
-def create_account_url = "${base_url}/accounts"
-def create_account_request = new RequestObject()
-create_account_request.setRestUrl(create_account_url)
-create_account_request.setRestRequestMethod("POST")
-create_account_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
-addAuthHeader(create_account_request)
-addContentTypeHeader(create_account_request)
-
-def create_account_response = WSBuiltInKeywords.sendRequest(create_account_request)
-
-WSBuiltInKeywords.verifyResponseStatusCode(create_account_response, 400)
-
-println("Test case passed!")
+def response = WSBuiltInKeywords.sendRequest(request)
+WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
