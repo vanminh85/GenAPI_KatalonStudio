@@ -1,49 +1,47 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	authToken = GlobalVariable.katalon_ai_api_auth_value ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
-		request.getHttpHeaderProperties().add(auth_header)
+		authHeader = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		request.getHttpHeaderProperties().add(authHeader)
 	}
 }
 
 def addContentTypeHeader(request) {
-	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
-	request.getHttpHeaderProperties().add(content_type_header)
+	contentTypeHeader = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	request.getHttpHeaderProperties().add(contentTypeHeader)
 }
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
+// Step 1: Create a new account using a POST request to /accounts
+def payload = '{"code": "test_account__unique__", "email": "test@example.com", "first_name": "John", "last_name": "Doe"}'
+def request1 = new RequestObject()
+request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload)))
+request1.setRestUrl("https://v3.recurly.com/accounts")
+request1.setRestRequestMethod("POST")
+addAuthHeader(request1)
+addContentTypeHeader(request1)
+def response1 = WSBuiltInKeywords.sendRequest(request1)
+WSBuiltInKeywords.verifyResponseStatusCode(response1, 201)
 
-// Step 1: Create a new account with an account code that already exists
-def account_code = "existing_account_code"
-def payload = [
-	"code": account_code,
-	"first_name": "John",
-	"last_name": "Doe"
-]
-def request = new RequestObject()
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(payload))))
-request.setRestUrl(base_url + "/accounts")
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
-def response = WSBuiltInKeywords.sendRequest(request)
-
-// Step 2: Verify that the response status code is 400
-WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
-
-println("Test case passed.")
+// Step 2: Use the same data to create the account again
+def request2 = new RequestObject()
+request2.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload)))
+request2.setRestUrl("https://v3.recurly.com/accounts")
+request2.setRestRequestMethod("POST")
+addAuthHeader(request2)
+addContentTypeHeader(request2)
+def response2 = WSBuiltInKeywords.sendRequest(request2)
+WSBuiltInKeywords.verifyResponseStatusCode(response2, 422)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

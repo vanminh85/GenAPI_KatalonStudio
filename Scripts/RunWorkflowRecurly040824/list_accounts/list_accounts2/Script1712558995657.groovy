@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,29 +22,17 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
-
-// Step 1: Create a new account without providing a required field
-def account_payload = [
-	"code": "test_account",
-	"email": "test@example.com",
-	"first_name": "John",
-	"last_name": "Doe"
-]
+def payload = '{"acquisition": {"campaign_id": "campaign123__unique__"}}'
 
 def request = new RequestObject()
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
-request.setRestUrl("${base_url}/accounts")
+request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload)))
+request.setRestUrl("https://v3.recurly.com/accounts")
 request.setRestRequestMethod("POST")
 addAuthHeader(request)
 addContentTypeHeader(request)
 
 def response = WSBuiltInKeywords.sendRequest(request)
-
-// Step 2: Verify that the response status code is 400
 WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
-
-println("Test passed!")
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
