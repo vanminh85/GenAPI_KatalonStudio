@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,43 +22,42 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
+// Step 1: Create a new account using the createAccount_ValidData_201 test case
+def createAccountRequest = new RequestObject()
+createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
+createAccountRequest.setRestRequestMethod("POST")
+addAuthHeader(createAccountRequest)
+addContentTypeHeader(createAccountRequest)
 
-// Step 1: Create two accounts with the same email address
-def email = "test@example.com"
+def createAccountPayload = '{"code": "test_account__unique__", "acquisition": {"channel": "Online Store"}}'
+createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createAccountPayload)))
 
-// Create the first account
-def payload = [
-	"email": email,
-	"first_name": "John",
-	"last_name": "Doe"
-]
-def request1 = new RequestObject()
-request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(payload))))
-request1.setRestUrl(base_url + "/accounts")
-request1.setRestRequestMethod("POST")
-addAuthHeader(request1)
-addContentTypeHeader(request1)
-def response1 = WSBuiltInKeywords.sendRequest(request1)
-WSBuiltInKeywords.verifyResponseStatusCode(response1, 201)
+def createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
+def createAccountData = new JsonSlurper().parseText(createAccountResponse.getResponseText())
+def accountId = createAccountData.get("id")
 
-// Create the second account with the same email
-def request2 = new RequestObject()
-request2.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(payload))))
-request2.setRestUrl(base_url + "/accounts")
-request2.setRestRequestMethod("POST")
-addAuthHeader(request2)
-addContentTypeHeader(request2)
-def response2 = WSBuiltInKeywords.sendRequest(request2)
-WSBuiltInKeywords.verifyResponseStatusCode(response2, 400)
+// Step 3: Create necessary data for the account update request
+def updateData = '{"username": "test_username__unique__", "email": "test_email__unique__@example.com", "preferred_locale": "en-US", "preferred_time_zone": "America/Los_Angeles"}'
 
-// Step 2: Verify that the response status code is 400 for the second account creation
-WSBuiltInKeywords.verifyResponseStatusCode(response2, 400)
+// Step 4: Send a PUT request to /accounts/{account_id} with the created data
+def updateRequest = new RequestObject()
+updateRequest.setRestUrl("https://v3.recurly.com/accounts/" + accountId)
+updateRequest.setRestRequestMethod("PUT")
+addAuthHeader(updateRequest)
+addContentTypeHeader(updateRequest)
+updateRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(updateData)))
 
-println("Test case passed.")
+def updateResponse = WSBuiltInKeywords.sendRequest(updateRequest)
+
+// Step 5: Verify that the response status code is 200
+def isUpdateSuccessful = WSBuiltInKeywords.verifyResponseStatusCode(updateResponse, 200)
+if (isUpdateSuccessful) {
+	println("Test Passed: Response status code is 200")
+} else {
+	println("Test Failed: Response status code is not 200")
+}
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
 	return replacedString
 }
-

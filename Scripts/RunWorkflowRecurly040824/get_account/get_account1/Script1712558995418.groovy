@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,37 +22,24 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
-
-// Step 1: Create a new account with valid data
-def account_payload = '''
+def accountData = '''
 {
-    "code": "test_account",
-    "email": "test@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
-    "address": {
-        "street1": "123 Main St",
-        "city": "New York",
-        "region": "NY",
-        "postal_code": "10001",
-        "country": "US"
-    }
+    "code": "test_code__unique__",
+    "acquisition": {"source": "test_source__unique__"},
+    "external_accounts": [{"account_number": "1234567890"}],
+    "shipping_addresses": [{"name": "John Doe", "address": "123 Main St", "city": "Anytown", "state": "CA", "zip": "12345", "country": "US"}]
 }
 '''
 
-def create_account_url = base_url + "/accounts"
-def create_account_request = new RequestObject()
-create_account_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(account_payload)))
-create_account_request.setRestUrl(create_account_url)
-create_account_request.setRestRequestMethod("POST")
-addAuthHeader(create_account_request)
-addContentTypeHeader(create_account_request)
+def request = new RequestObject()
+request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(accountData)))
+request.setRestUrl("https://v3.recurly.com/accounts")
+request.setRestRequestMethod("POST")
+addAuthHeader(request)
+addContentTypeHeader(request)
 
-def create_account_response = WSBuiltInKeywords.sendRequest(create_account_request)
-WSBuiltInKeywords.verifyResponseStatusCode(create_account_response, 201)
-
-println("Test case passed")
+def response = WSBuiltInKeywords.sendRequest(request)
+WSBuiltInKeywords.verifyResponseStatusCode(response, 201)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
