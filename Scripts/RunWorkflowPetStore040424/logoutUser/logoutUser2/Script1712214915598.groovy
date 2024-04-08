@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -24,18 +23,12 @@ def addContentTypeHeader(request) {
 uuid = UUID.randomUUID().toString()
 
 def user_payload = [
-	"id": 1,
-	"username": "test_user__unique__",
-	"firstName": "John",
-	"lastName": "Doe",
-	"email": "johndoe@example.com",
-	"password": "password123",
-	"phone": "1234567890",
-	"userStatus": 1
+	username: "test_user__unique__",
+	userStatus: 1
 ]
 
 def createUserRequest = new RequestObject()
-createUserRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson([user_payload]))))
+createUserRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(user_payload))))
 createUserRequest.setRestUrl("https://petstore.swagger.io/v2/user/createWithArray")
 createUserRequest.setRestRequestMethod("POST")
 addContentTypeHeader(createUserRequest)
@@ -46,13 +39,11 @@ WSBuiltInKeywords.verifyResponseStatusCode(createUserResponse, 200)
 
 def logoutRequest = new RequestObject()
 logoutRequest.setRestUrl("https://petstore.swagger.io/v2/user/logout")
-logoutRequest.setRestRequestMethod("GET")
+logoutRequest.setRestRequestMethod("POST")
 addAuthHeader(logoutRequest)
 
 def logoutResponse = WSBuiltInKeywords.sendRequest(logoutRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(logoutResponse, 200)
-
-WSBuiltInKeywords.verifyResponseStatusCode(logoutResponse, 200)
+WSBuiltInKeywords.verifyResponseStatusCode(logoutResponse, 401)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

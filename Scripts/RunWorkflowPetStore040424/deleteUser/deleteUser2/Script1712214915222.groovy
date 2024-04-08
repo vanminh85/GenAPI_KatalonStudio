@@ -1,10 +1,10 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
+import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
@@ -22,71 +22,45 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://petstore.swagger.io/v2"
+def categoryRequest = new RequestObject()
+categoryRequest.setRestUrl("https://petstore.swagger.io/v2/category")
+categoryRequest.setRestRequestMethod("POST")
+addAuthHeader(categoryRequest)
+addContentTypeHeader(categoryRequest)
+def categoryPayload = '{"id": 1, "name": "category__unique__"}'
+categoryRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(categoryPayload)))
+def categoryResponse = WSBuiltInKeywords.sendRequest(categoryRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(categoryResponse, 200)
 
-// Step 1: Create a new Category resource
-def category_payload = [
-	"id": 1,
-	"name": "TestCategory"
-]
-def category_request = new RequestObject()
-category_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(category_payload))))
-category_request.setRestUrl(base_url + "/category")
-category_request.setRestRequestMethod("POST")
-addAuthHeader(category_request)
-addContentTypeHeader(category_request)
-def category_response = WSBuiltInKeywords.sendRequest(category_request)
-WSBuiltInKeywords.verifyResponseStatusCode(category_response, 200)
+def petRequest = new RequestObject()
+petRequest.setRestUrl("https://petstore.swagger.io/v2/pet")
+petRequest.setRestRequestMethod("POST")
+addAuthHeader(petRequest)
+addContentTypeHeader(petRequest)
+def petPayload = '{"id": 1, "category": {"id": 1, "name": "category__unique__"}, "name": "pet__unique__", "photoUrls": ["url"]}'
+petRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(petPayload)))
+def petResponse = WSBuiltInKeywords.sendRequest(petRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(petResponse, 200)
 
-// Step 2: Create a new Pet resource
-def pet_payload = [
-	"id": 1,
-	"name": "TestPet",
-	"category": [
-		"id": 1,
-		"name": "TestCategory"
-	]
-]
-def pet_request = new RequestObject()
-pet_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(pet_payload))))
-pet_request.setRestUrl(base_url + "/pet")
-pet_request.setRestRequestMethod("POST")
-addAuthHeader(pet_request)
-addContentTypeHeader(pet_request)
-def pet_response = WSBuiltInKeywords.sendRequest(pet_request)
-WSBuiltInKeywords.verifyResponseStatusCode(pet_response, 200)
+def orderRequest = new RequestObject()
+orderRequest.setRestUrl("https://petstore.swagger.io/v2/store/order")
+orderRequest.setRestRequestMethod("POST")
+addAuthHeader(orderRequest)
+addContentTypeHeader(orderRequest)
+def orderPayload = '{"id": 1, "petId": 1, "quantity": 1, "shipDate": "2022-01-01T00:00:00Z", "status": "placed", "complete": true}'
+orderRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(orderPayload)))
+def orderResponse = WSBuiltInKeywords.sendRequest(orderRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(orderResponse, 200)
 
-// Step 3: Create a new Order resource
-def order_payload = [
-	"id": 1,
-	"petId": 1,
-	"status": "placed"
-]
-def order_request = new RequestObject()
-order_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(order_payload))))
-order_request.setRestUrl(base_url + "/store/order")
-order_request.setRestRequestMethod("POST")
-addAuthHeader(order_request)
-addContentTypeHeader(order_request)
-def order_response = WSBuiltInKeywords.sendRequest(order_request)
-WSBuiltInKeywords.verifyResponseStatusCode(order_response, 200)
-
-// Step 4: Send a POST request to /user/{username}
-def user_payload = [
-	"username": "NonExistentUser",
-	"userStatus": 1
-]
-def user_request = new RequestObject()
-user_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(user_payload))))
-user_request.setRestUrl(base_url + "/user/" + user_payload.username)
-user_request.setRestRequestMethod("POST")
-addAuthHeader(user_request)
-addContentTypeHeader(user_request)
-def user_response = WSBuiltInKeywords.sendRequest(user_request)
-WSBuiltInKeywords.verifyResponseStatusCode(user_response, 404)
-
-// Step 5: Verify the response status code is 404
-WSBuiltInKeywords.verifyResponseStatusCode(user_response, 404)
+def userRequest = new RequestObject()
+userRequest.setRestUrl("https://petstore.swagger.io/v2/user/createWithArray")
+userRequest.setRestRequestMethod("POST")
+addAuthHeader(userRequest)
+addContentTypeHeader(userRequest)
+def userPayload = '[{"id": 1, "username": "invalid_username", "userStatus": 1}]'
+userRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(userPayload)))
+def userResponse = WSBuiltInKeywords.sendRequest(userRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(userResponse, 400)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

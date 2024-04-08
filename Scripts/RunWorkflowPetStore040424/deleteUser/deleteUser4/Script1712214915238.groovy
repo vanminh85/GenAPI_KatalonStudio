@@ -1,10 +1,10 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
+import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
@@ -22,71 +22,66 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-// Step 1: Create a new Category resource
-def category_payload = [
-	"id": 1,
-	"name": "TestCategory"
-]
+// Step 1: Create a new Category
+def categoryRequest = new RequestObject()
+categoryRequest.setRestUrl("https://petstore.swagger.io/v2/category")
+categoryRequest.setRestRequestMethod("POST")
+addAuthHeader(categoryRequest)
+addContentTypeHeader(categoryRequest)
+def categoryPayload = '{"id": 1, "name": "category__unique__"}'
+categoryRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(categoryPayload)))
+def categoryResponse = WSBuiltInKeywords.sendRequest(categoryRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(categoryResponse, 200)
 
-def category_request = new RequestObject()
-category_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(category_payload))))
-category_request.setRestUrl("https://petstore.swagger.io/v2/category")
-category_request.setRestRequestMethod("POST")
-addAuthHeader(category_request)
-addContentTypeHeader(category_request)
+// Step 2: Create a new Pet
+def petRequest = new RequestObject()
+petRequest.setRestUrl("https://petstore.swagger.io/v2/pet")
+petRequest.setRestRequestMethod("POST")
+addAuthHeader(petRequest)
+addContentTypeHeader(petRequest)
+def petPayload = '{"id": 1, "category": {"id": 1, "name": "category__unique__"}, "name": "pet__unique__", "photoUrls": ["url"]}'
+petRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(petPayload)))
+def petResponse = WSBuiltInKeywords.sendRequest(petRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(petResponse, 200)
 
-def category_response = WSBuiltInKeywords.sendRequest(category_request)
-WSBuiltInKeywords.verifyResponseStatusCode(category_response, 200)
+// Step 3: Create a new Order
+def orderRequest = new RequestObject()
+orderRequest.setRestUrl("https://petstore.swagger.io/v2/store/order")
+orderRequest.setRestRequestMethod("POST")
+addAuthHeader(orderRequest)
+addContentTypeHeader(orderRequest)
+def orderPayload = '{"id": 1, "petId": 1, "quantity": 1, "shipDate": "2022-01-01T00:00:00Z", "status": "placed", "complete": true}'
+orderRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(orderPayload)))
+def orderResponse = WSBuiltInKeywords.sendRequest(orderRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(orderResponse, 200)
 
-// Step 2: Create a new Order resource
-def order_payload = [
-	"id": 1,
-	"petId": null,
-	"quantity": 1,
-	"shipDate": "2022-01-01T00:00:00Z",
-	"status": "placed",
-	"complete": false
-]
+// Step 4: Create a new User
+def userRequest = new RequestObject()
+userRequest.setRestUrl("https://petstore.swagger.io/v2/user/createWithArray")
+userRequest.setRestRequestMethod("POST")
+addAuthHeader(userRequest)
+addContentTypeHeader(userRequest)
+def userPayload = '[{"id": 1, "username": "user__unique__", "firstName": "John", "lastName": "Doe", "email": "john.doe@example.com", "password": "password", "phone": "1234567890", "userStatus": 1}]'
+userRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(userPayload)))
+def userResponse = WSBuiltInKeywords.sendRequest(userRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(userResponse, 200)
 
-def order_request = new RequestObject()
-order_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(order_payload))))
-order_request.setRestUrl("https://petstore.swagger.io/v2/store/order")
-order_request.setRestRequestMethod("POST")
-addAuthHeader(order_request)
-addContentTypeHeader(order_request)
+// Step 5: Update the User
+def invalidUsername = "invalid_username"
+def updateUserRequest = new RequestObject()
+updateUserRequest.setRestUrl("https://petstore.swagger.io/v2/user/${invalidUsername}")
+updateUserRequest.setRestRequestMethod("PUT")
+addAuthHeader(updateUserRequest)
+addContentTypeHeader(updateUserRequest)
+def updateUserPayload = '{"id": 1, "username": "updated_username", "firstName": "Jane", "lastName": "Doe", "email": "jane.doe@example.com", "password": "newpassword", "phone": "9876543210", "userStatus": 2}'
+updateUserRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(updateUserPayload)))
+def updateUserResponse = WSBuiltInKeywords.sendRequest(updateUserRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(updateUserResponse, 404)
 
-def order_response = WSBuiltInKeywords.sendRequest(order_request)
-WSBuiltInKeywords.verifyResponseStatusCode(order_response, 200)
-
-// Step 3: Send a POST request to /user/{username}
-def user_payload = [
-	"id": 1,
-	"username": "TestUser",
-	"firstName": "Test",
-	"lastName": "User",
-	"email": "testuser@example.com",
-	"password": "password",
-	"phone": "1234567890",
-	"userStatus": 1
-]
-
-def user_request = new RequestObject()
-user_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(user_payload))))
-user_request.setRestUrl("https://petstore.swagger.io/v2/user/${user_payload['username']}")
-user_request.setRestRequestMethod("POST")
-addAuthHeader(user_request)
-addContentTypeHeader(user_request)
-
-def user_response = WSBuiltInKeywords.sendRequest(user_request)
-WSBuiltInKeywords.verifyResponseStatusCode(user_response, 400)
-
-// Step 4: Verify the response status code is 400
-WSBuiltInKeywords.verifyResponseStatusCode(user_response, 400)
-
-println("Test case executed successfully.")
+// Step 6: Verify the response status code is 404
+assert updateUserResponse.getStatusCode() == 404
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
 	return replacedString
 }
-

@@ -1,10 +1,10 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
+import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
@@ -22,32 +22,58 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def url = "https://petstore.swagger.io/v2/user/{username}"
-url = url.replace("{username}", "TestUser")
-def payload = [
-	"id": 0,
-	"username": "TestUser",
-	"firstName": "",
-	"lastName": "",
-	"email": "",
-	"password": "",
-	"phone": "",
-	"userStatus": 1
-]
-def headers = [
-	"Content-Type": "application/json"
-]
-def request = new RequestObject()
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(payload))))
-request.setRestUrl(url)
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
+// Step 1: Create a new Category
+def categoryRequest = new RequestObject()
+categoryRequest.setRestUrl("https://petstore.swagger.io/v2/category")
+categoryRequest.setRestRequestMethod("POST")
+addAuthHeader(categoryRequest)
+addContentTypeHeader(categoryRequest)
+def categoryPayload = '{"id": 1, "name": "category__unique__"}'
+categoryRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(categoryPayload)))
+def categoryResponse = WSBuiltInKeywords.sendRequest(categoryRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(categoryResponse, 200)
 
-def response = WSBuiltInKeywords.sendRequest(request)
-WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
+// Step 2: Create a new Pet
+def petRequest = new RequestObject()
+petRequest.setRestUrl("https://petstore.swagger.io/v2/pet")
+petRequest.setRestRequestMethod("POST")
+addAuthHeader(petRequest)
+addContentTypeHeader(petRequest)
+def petPayload = '{"id": 1, "category": {"id": 1, "name": "category__unique__"}, "name": "pet__unique__", "photoUrls": ["url"]}'
+petRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(petPayload)))
+def petResponse = WSBuiltInKeywords.sendRequest(petRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(petResponse, 200)
 
-println("Test case passed")
+// Step 3: Create a new Order
+def orderRequest = new RequestObject()
+orderRequest.setRestUrl("https://petstore.swagger.io/v2/store/order")
+orderRequest.setRestRequestMethod("POST")
+addAuthHeader(orderRequest)
+addContentTypeHeader(orderRequest)
+def orderPayload = '{"id": 1, "petId": 1, "quantity": 1, "shipDate": "2022-01-01T00:00:00Z", "status": "placed", "complete": true}'
+orderRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(orderPayload)))
+def orderResponse = WSBuiltInKeywords.sendRequest(orderRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(orderResponse, 200)
+
+// Step 4: Create a new User
+def userRequest = new RequestObject()
+userRequest.setRestUrl("https://petstore.swagger.io/v2/user/createWithArray")
+userRequest.setRestRequestMethod("POST")
+addAuthHeader(userRequest)
+addContentTypeHeader(userRequest)
+def userPayload = '[{"id": 1, "username": "user__unique__", "userStatus": 1}]'
+userRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(userPayload)))
+def userResponse = WSBuiltInKeywords.sendRequest(userRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(userResponse, 200)
+
+// Step 5: Delete the created User
+def username = "user__unique__"
+def deleteRequest = new RequestObject()
+deleteRequest.setRestUrl("https://petstore.swagger.io/v2/user/" + username)
+deleteRequest.setRestRequestMethod("DELETE")
+addAuthHeader(deleteRequest)
+def deleteResponse = WSBuiltInKeywords.sendRequest(deleteRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(deleteResponse, 200)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
