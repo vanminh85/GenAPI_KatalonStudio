@@ -22,14 +22,7 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def accountData = '''
-{
-    "code": "test_code__unique__",
-    "acquisition": {"source": "test_source__unique__"},
-    "external_accounts": [{"account_number": "1234567890"}],
-    "shipping_addresses": [{"name": "John Doe", "address": "123 Main St", "city": "Anytown", "state": "CA", "zip": "12345", "country": "US"}]
-}
-'''
+def accountData = '{"code": "test_account__unique__", "email": "test@example.com", "first_name": "John", "last_name": "Doe"}'
 
 def request = new RequestObject()
 request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(accountData)))

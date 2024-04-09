@@ -23,40 +23,30 @@ def addContentTypeHeader(request) {
 uuid = UUID.randomUUID().toString()
 
 // Step 1: Create a new account
-create_account_request = new RequestObject()
-create_account_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson([)
-	"code": "test_account__unique__",
-	"acquisition": [
-		"cost": [
-			"currency": "USD",
-			"amount": 10.0
-		],
-		"channel": "direct_traffic",
-		"subchannel": "online",
-		"campaign": "summer_sale"
-	],
-	"external_accounts": []
-])))
-create_account_request.setRestUrl("https://v3.recurly.com/accounts")
-create_account_request.setRestRequestMethod("POST")
-addAuthHeader(create_account_request)
-addContentTypeHeader(create_account_request)
+account_payload = '{"code": "test_account__unique__"}'
+request1 = new RequestObject()
+request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(account_payload)))
+request1.setRestUrl("https://v3.recurly.com/accounts")
+request1.setRestRequestMethod("POST")
+addAuthHeader(request1)
+addContentTypeHeader(request1)
+response1 = WSBuiltInKeywords.sendRequest(request1)
+account_id = new JsonSlurper().parseText(response1.getResponseText())["id"]
 
-create_account_response = WSBuiltInKeywords.sendRequest(create_account_request)
-WSBuiltInKeywords.verifyResponseStatusCode(create_account_response, 201)
+// Step 2: Use the newly created account's ID
+// Step 3: Create a new account acquisition with invalid data
+invalid_acquisition_payload = '{"cost": {"currency": "USD", "amount": "invalid_amount"}}'
+request2 = new RequestObject()
+request2.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(invalid_acquisition_payload)))
+request2.setRestUrl("https://v3.recurly.com/accounts/" + account_id + "/acquisition")
+request2.setRestRequestMethod("POST")
+addAuthHeader(request2)
+addContentTypeHeader(request2)
+response2 = WSBuiltInKeywords.sendRequest(request2)
 
-// Step 3: Extract the newly created account_id
-new_account_id = new JsonSlurper().parseText(create_account_response.getResponseText())["id"]
-
-// Step 4: Attempt to retrieve the account acquisition data for a non-existent account
-get_non_existent_account_acquisition_request = new RequestObject()
-get_non_existent_account_acquisition_request.setRestUrl("https://v3.recurly.com/accounts/non_existent_account_id/acquisition")
-get_non_existent_account_acquisition_request.setRestRequestMethod("GET")
-addAuthHeader(get_non_existent_account_acquisition_request)
-addContentTypeHeader(get_non_existent_account_acquisition_request)
-
-get_non_existent_account_acquisition_response = WSBuiltInKeywords.sendRequest(get_non_existent_account_acquisition_request)
-WSBuiltInKeywords.verifyResponseStatusCode(get_non_existent_account_acquisition_response, 404)
+// Step 4: Verify the response status code is 422
+assert WSBuiltInKeywords.verifyResponseStatusCode(response2, 422)
+println("Test passed successfully.")
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

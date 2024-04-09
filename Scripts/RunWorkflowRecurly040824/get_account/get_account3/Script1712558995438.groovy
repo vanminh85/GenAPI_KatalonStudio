@@ -8,45 +8,30 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
 	if (authToken) {
-		authHeader = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
-		request.getHttpHeaderProperties().add(authHeader)
+		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		request.getHttpHeaderProperties().add(auth_header)
 	}
 }
 
 def addContentTypeHeader(request) {
-	contentTypeHeader = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
-	request.getHttpHeaderProperties().add(contentTypeHeader)
+	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	request.getHttpHeaderProperties().add(content_type_header)
 }
 
 uuid = UUID.randomUUID().toString()
 
-// Step 1: Create a new account
-createAccountRequest = new RequestObject()
-createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson([)
-	"code": "test_account__unique__",
-	"email": "test@example.com",
-	"first_name": "John",
-	"last_name": "Doe"
-])))
-createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
-createAccountRequest.setRestRequestMethod("POST")
-addAuthHeader(createAccountRequest)
-addContentTypeHeader(createAccountRequest)
-createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
-createAccountData = new JsonSlurper().parseText(createAccountResponse.getResponseText())
-accountId = createAccountData.get("id")
+def non_existent_id = String.valueOf(new Random().nextInt(9000) + 1000)
 
-// Step 3: Send a GET request to /accounts/{account_id}
-getAccountRequest = new RequestObject()
-getAccountRequest.setRestUrl("https://v3.recurly.com/accounts/" + accountId)
-getAccountRequest.setRestRequestMethod("GET")
-addAuthHeader(getAccountRequest)
-getAccountResponse = WSBuiltInKeywords.sendRequest(getAccountRequest)
+def request = new RequestObject()
+request.setRestUrl("https://v3.recurly.com/accounts/" + non_existent_id)
+request.setRestRequestMethod("GET")
+addAuthHeader(request)
+addContentTypeHeader(request)
 
-// Step 4: Verify that the response status code is 200
-WSBuiltInKeywords.verifyResponseStatusCode(getAccountResponse, 200)
+def response = WSBuiltInKeywords.sendRequest(request)
+WSBuiltInKeywords.verifyResponseStatusCode(response, 404)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

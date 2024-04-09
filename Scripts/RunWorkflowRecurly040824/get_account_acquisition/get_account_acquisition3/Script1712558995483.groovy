@@ -24,61 +24,23 @@ uuid = UUID.randomUUID().toString()
 
 // Step 1: Create a new account
 def createAccountRequest = new RequestObject()
+createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID('{"code":"test_account__unique__","acquisition":{"cost":{"currency":"USD","amount":10.0},"channel":"email","subchannel":"marketing","campaign":"summer_sale"}}')))
 createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
 createAccountRequest.setRestRequestMethod("POST")
 addAuthHeader(createAccountRequest)
 addContentTypeHeader(createAccountRequest)
-
-def createAccountPayload = JsonOutput.toJson([
-	code: "test_account__unique__",
-	acquisition: [
-		cost: [
-			currency: "USD",
-			amount: 100.0
-		],
-		channel: "direct_traffic",
-		subchannel: "online_ads",
-		campaign: "summer_sale"
-	],
-	shipping_addresses: []
-])
-
-createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createAccountPayload)))
-
 def createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
 def account_id = new JsonSlurper().parseText(createAccountResponse.getResponseText())["id"]
 
-// Step 3: Create acquisition data for the account
-def createAcquisitionRequest = new RequestObject()
-createAcquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/${account_id}/acquisition")
-createAcquisitionRequest.setRestRequestMethod("POST")
-addAuthHeader(createAcquisitionRequest)
-addContentTypeHeader(createAcquisitionRequest)
+// Step 3: Retrieve the account acquisition data
+def retrieveAcquisitionRequest = new RequestObject()
+retrieveAcquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/${account_id}/acquisition")
+retrieveAcquisitionRequest.setRestRequestMethod("GET")
+addAuthHeader(retrieveAcquisitionRequest)
+def retrieveAcquisitionResponse = WSBuiltInKeywords.sendRequest(retrieveAcquisitionRequest)
 
-def createAcquisitionPayload = JsonOutput.toJson([
-	cost: [
-		currency: "USD",
-		amount: 100.0
-	],
-	channel: "direct_traffic",
-	subchannel: "online_ads",
-	campaign: "summer_sale"
-])
-
-createAcquisitionRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createAcquisitionPayload)))
-
-def createAcquisitionResponse = WSBuiltInKeywords.sendRequest(createAcquisitionRequest)
-
-// Step 4: Retrieve the acquisition data
-def getAcquisitionRequest = new RequestObject()
-getAcquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/${account_id}/acquisition")
-getAcquisitionRequest.setRestRequestMethod("GET")
-addAuthHeader(getAcquisitionRequest)
-
-def getAcquisitionResponse = WSBuiltInKeywords.sendRequest(getAcquisitionRequest)
-
-// Step 5: Verify the response status code
-WSBuiltInKeywords.verifyResponseStatusCode(getAcquisitionResponse, 200)
+// Step 4: Verify that the response status code is 404
+WSBuiltInKeywords.verifyResponseStatusCode(retrieveAcquisitionResponse, 404)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

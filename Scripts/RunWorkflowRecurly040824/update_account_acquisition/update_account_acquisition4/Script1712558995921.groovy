@@ -22,37 +22,26 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-// Step 1: Create a new account
-def accountPayload = '{"code": "test_account__unique__", "acquisition": {"cost": {"currency": "USD", "amount": 50.0}, "channel": "email", "subchannel": "newsletter", "campaign": "summer_sale"}, "external_accounts": []}'
-def accountRequest = new RequestObject()
-accountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(accountPayload)))
-accountRequest.setRestUrl("https://v3.recurly.com/accounts")
-accountRequest.setRestRequestMethod("POST")
-addAuthHeader(accountRequest)
-addContentTypeHeader(accountRequest)
-def accountResponse = WSBuiltInKeywords.sendRequest(accountRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(accountResponse, 201)
+def request1 = new RequestObject()
+request1.setRestUrl("https://v3.recurly.com/accounts")
+request1.setRestRequestMethod("POST")
+addAuthHeader(request1)
+addContentTypeHeader(request1)
+def payload1 = '{"code": "test_account__unique__"}'
+request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload1)))
 
-def accountId = new JsonSlurper().parseText(accountResponse.getResponseText())["id"]
+def response1 = WSBuiltInKeywords.sendRequest(request1)
+WSBuiltInKeywords.verifyResponseStatusCode(response1, 201)
 
-// Step 2: Create a new account acquisition
-def acquisitionPayload = '{"cost": {"currency": "USD", "amount": 100.0}, "channel": "advertising", "subchannel": "social_media", "campaign": "holiday_promo"}'
-def acquisitionRequest = new RequestObject()
-acquisitionRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(acquisitionPayload)))
-acquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/${accountId}/acquisition")
-acquisitionRequest.setRestRequestMethod("POST")
-addAuthHeader(acquisitionRequest)
-addContentTypeHeader(acquisitionRequest)
-def acquisitionResponse = WSBuiltInKeywords.sendRequest(acquisitionRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(acquisitionResponse, 201)
+def non_existent_account_id = "non_existent_id__unique__"
 
-// Step 3: Delete the account acquisition data
-def deleteRequest = new RequestObject()
-deleteRequest.setRestUrl("https://v3.recurly.com/accounts/${accountId}/acquisition")
-deleteRequest.setRestRequestMethod("DELETE")
-addAuthHeader(deleteRequest)
-def deleteResponse = WSBuiltInKeywords.sendRequest(deleteRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(deleteResponse, 204)
+def request2 = new RequestObject()
+request2.setRestUrl("https://v3.recurly.com/accounts/" + non_existent_account_id + "/acquisition")
+request2.setRestRequestMethod("GET")
+addAuthHeader(request2)
+
+def response2 = WSBuiltInKeywords.sendRequest(request2)
+WSBuiltInKeywords.verifyResponseStatusCode(response2, 404)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

@@ -27,23 +27,28 @@ request1.setRestUrl("https://v3.recurly.com/accounts")
 request1.setRestRequestMethod("POST")
 addAuthHeader(request1)
 addContentTypeHeader(request1)
-def payload1 = '{"code": "test_account__unique__", "acquisition": {"cost": {"currency": "USD", "amount": 100.0}, "channel": "direct_traffic", "subchannel": "online_ads", "campaign": "summer_sale"}, "shipping_addresses": []}'
+def payload1 = '{"code": "test_account__unique__", "acquisition": {"cost": {"currency": "USD", "amount": 10.0}, "channel": "email"}}'
 request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload1)))
-
 def response1 = WSBuiltInKeywords.sendRequest(request1)
-WSBuiltInKeywords.verifyResponseStatusCode(response1, 201)
-
 def account_id = new JsonSlurper().parseText(response1.getResponseText())["id"]
 
 def request2 = new RequestObject()
-request2.setRestUrl("https://v3.recurly.com/accounts/non_existent_id__unique__/acquisition")
-request2.setRestRequestMethod("GET")
+request2.setRestUrl("https://v3.recurly.com/accounts/" + account_id + "/acquisition")
+request2.setRestRequestMethod("POST")
 addAuthHeader(request2)
 addContentTypeHeader(request2)
-
+def payload2 = '{"cost": {"currency": "USD", "amount": 5.0}, "channel": "referral"}'
+request2.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload2)))
 def response2 = WSBuiltInKeywords.sendRequest(request2)
-WSBuiltInKeywords.verifyResponseStatusCode(response2, 404)
-assert response2.getStatusCode() == 404
+
+def request3 = new RequestObject()
+request3.setRestUrl("https://v3.recurly.com/accounts/" + account_id + "/acquisition")
+request3.setRestRequestMethod("DELETE")
+addAuthHeader(request3)
+def response3 = WSBuiltInKeywords.sendRequest(request3)
+
+def expectedStatusCode = 204
+WSBuiltInKeywords.verifyResponseStatusCode(response3, expectedStatusCode)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

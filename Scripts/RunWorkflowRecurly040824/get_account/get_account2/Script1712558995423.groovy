@@ -8,65 +8,42 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
 		request.getHttpHeaderProperties().add(auth_header)
 	}
 }
 
 def addContentTypeHeader(request) {
-	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
 	request.getHttpHeaderProperties().add(content_type_header)
 }
 
 uuid = UUID.randomUUID().toString()
 
-// Request 1
-def request1 = new RequestObject()
+// Step 1: Create a new account
+account_payload = '{"code": "test_account__unique__", "email": "test@example.com", "first_name": "John", "last_name": "Doe"}'
+request1 = new RequestObject()
+request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(account_payload)))
 request1.setRestUrl("https://v3.recurly.com/accounts")
 request1.setRestRequestMethod("POST")
 addAuthHeader(request1)
 addContentTypeHeader(request1)
+response1 = WSBuiltInKeywords.sendRequest(request1)
+WSBuiltInKeywords.verifyResponseStatusCode(response1, 201)
+account_id = new JsonSlurper().parseText(response1.getResponseText())["id"]
 
-def payload1 = '''
-{
-    "username": "test_username__unique__",
-    "email": "test_email__unique__@example.com",
-    "preferred_locale": "en-US",
-    "preferred_time_zone": "America/Los_Angeles",
-    "cc_emails": "test_cc_email__unique__@example.com",
-    "first_name": "Test",
-    "last_name": "User",
-    "company": "Test Company",
-    "vat_number": "VAT123",
-    "tax_exempt": false,
-    "exemption_certificate": "exemption123",
-    "parent_account_id": "parent123",
-    "bill_to": "self",
-    "dunning_campaign_id": "dunning123",
-    "invoice_template_id": "template123",
-    "address": {
-        "street1": "123 Test St",
-        "city": "Test City",
-        "state": "CA",
-        "zip": "12345",
-        "country": "US"
-    },
-    "billing_info": {
-        "first_name": "Test",
-        "last_name": "User",
-        "number": "4111111111111111",
-        "month": "12",
-        "year": "2023"
-    }
-}
-'''
-request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload1)))
-
-def response1 = WSBuiltInKeywords.sendRequest(request1)
-WSBuiltInKeywords.verifyResponseStatusCode(response1, 400)
-
+// Step 3: Update the account with invalid data
+updated_account_payload = '{"code": "test_account__unique__", "email": "test@example.com", "first_name": "John", "last_name": "Doe__unique__"}'
+request2 = new RequestObject()
+request2.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(updated_account_payload)))
+request2.setRestUrl("https://v3.recurly.com/accounts/" + account_id)
+request2.setRestRequestMethod("PUT")
+addAuthHeader(request2)
+addContentTypeHeader(request2)
+response2 = WSBuiltInKeywords.sendRequest(request2)
+WSBuiltInKeywords.verifyResponseStatusCode(response2, 400)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
