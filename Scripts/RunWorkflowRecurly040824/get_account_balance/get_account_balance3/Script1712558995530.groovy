@@ -1,33 +1,47 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	authToken = GlobalVariable.katalon_ai_api_auth_value ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
-		request.getHttpHeaderProperties().add(auth_header)
+		authHeader = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		request.getHttpHeaderProperties().add(authHeader)
 	}
 }
 
 def addContentTypeHeader(request) {
-	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
-	request.getHttpHeaderProperties().add(content_type_header)
+	contentTypeHeader = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	request.getHttpHeaderProperties().add(contentTypeHeader)
 }
 
 uuid = UUID.randomUUID().toString()
 
-def request = new RequestObject()
-request.setRestUrl("https://v3.recurly.com/accounts/${uuid}/balance")
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
+// Step 1: Create a new account with missing required fields
+accountPayload = '{"code": "test_account__unique__"}'
+accountRequest = new RequestObject()
+accountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(accountPayload)))
+accountRequest.setRestUrl("https://v3.recurly.com/accounts")
+accountRequest.setRestRequestMethod("POST")
+addAuthHeader(accountRequest)
+addContentTypeHeader(accountRequest)
+accountResponse = WSBuiltInKeywords.sendRequest(accountRequest)
+accountId = new JsonSlurper().parseText(accountResponse.getResponseText()).get("id")
 
-def response = WSBuiltInKeywords.sendRequest(request)
-WSBuiltInKeywords.verifyResponseStatusCode(response, 404)
+// Step 2: Get the account balance for the newly created account
+balanceRequest = new RequestObject()
+balanceRequest.setRestUrl("https://v3.recurly.com/accounts/" + accountId + "/balance")
+balanceRequest.setRestRequestMethod("POST")
+addAuthHeader(balanceRequest)
+balanceResponse = WSBuiltInKeywords.sendRequest(balanceRequest)
+
+// Step 3: Verify the response status code is 400
+WSBuiltInKeywords.verifyResponseStatusCode(balanceResponse, 400)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

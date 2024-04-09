@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,36 +22,25 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def createAccountPayload = [
-	"code": "test_account",
-	"email": "test@example.com",
-	"first_name": "John",
-	"last_name": "Doe"
-]
+def request1 = new RequestObject()
+request1.setRestUrl("https://v3.recurly.com/accounts")
+request1.setRestRequestMethod("POST")
+addAuthHeader(request1)
+addContentTypeHeader(request1)
+def payload1 = '{"code": "test_account__unique__", "first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"}'
+request1.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload1)))
+def response1 = WSBuiltInKeywords.sendRequest(request1)
+WSBuiltInKeywords.verifyResponseStatusCode(response1, 201)
 
-def createAccountRequest = new RequestObject()
-createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(createAccountPayload))))
-createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
-createAccountRequest.setRestRequestMethod("POST")
-addAuthHeader(createAccountRequest)
-addContentTypeHeader(createAccountRequest)
+def account_id = new JsonSlurper().parseText(response1.getResponseText())["id"]
 
-def createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(createAccountResponse, 201)
-
-def accountId = new JsonSlurper().parseText(createAccountResponse.getResponseText())["code"]
-
-def postBalanceUrl = "https://v3.recurly.com/accounts/${accountId}/balance"
-
-def postBalanceRequest = new RequestObject()
-postBalanceRequest.setRestUrl(postBalanceUrl)
-postBalanceRequest.setRestRequestMethod("POST")
-addAuthHeader(postBalanceRequest)
-addContentTypeHeader(postBalanceRequest)
-
-def postBalanceResponse = WSBuiltInKeywords.sendRequest(postBalanceRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(postBalanceResponse, 200)
-WS.verifyResponseStatusCode(postBalanceResponse, 200)
+def request2 = new RequestObject()
+request2.setRestUrl("https://v3.recurly.com/accounts/" + account_id + "/balance")
+request2.setRestRequestMethod("POST")
+addAuthHeader(request2)
+addContentTypeHeader(request2)
+def response2 = WSBuiltInKeywords.sendRequest(request2)
+WSBuiltInKeywords.verifyResponseStatusCode(response2, 201)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
