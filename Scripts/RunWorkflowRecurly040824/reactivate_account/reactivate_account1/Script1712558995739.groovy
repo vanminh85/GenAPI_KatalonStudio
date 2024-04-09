@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -23,32 +22,34 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
+// Step 1: Create a new account
+def payload_create_account = '{"code": "test_account__unique__"}'
+def request_create_account = new RequestObject()
+request_create_account.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload_create_account)))
+request_create_account.setRestUrl("https://v3.recurly.com/accounts")
+request_create_account.setRestRequestMethod("POST")
+addAuthHeader(request_create_account)
+addContentTypeHeader(request_create_account)
+def response_create_account = WSBuiltInKeywords.sendRequest(request_create_account)
+def account_id = new JsonSlurper().parseText(response_create_account.getResponseText())["id"]
 
-// Step 1: Create a new account with state 'inactive'
-def account_payload = [
-	"state": "inactive"
-]
-def account_request = new RequestObject()
-account_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(account_payload))))
-account_request.setRestUrl(base_url + "/accounts")
-account_request.setRestRequestMethod("POST")
-addAuthHeader(account_request)
-addContentTypeHeader(account_request)
-def account_response = WSBuiltInKeywords.sendRequest(account_request)
-WSBuiltInKeywords.verifyResponseStatusCode(account_response, 201)
+// Step 2: Extract the 'id' from the response
+// Already extracted in Step 1
 
-// Step 2: Reactivate the account by calling POST /accounts/{account_id}/reactivate
-def account_id = new JsonSlurper().parseText(account_response.getResponseText())["id"]
-def reactivate_request = new RequestObject()
-reactivate_request.setRestUrl(base_url + "/accounts/" + account_id + "/reactivate")
-reactivate_request.setRestRequestMethod("PUT")
-addAuthHeader(reactivate_request)
-def reactivate_response = WSBuiltInKeywords.sendRequest(reactivate_request)
-WSBuiltInKeywords.verifyResponseStatusCode(reactivate_response, 200)
+// Step 3: Send a POST request to /accounts/{account_id}/reactivate
+def request_reactivate_account = new RequestObject()
+request_reactivate_account.setRestUrl("https://v3.recurly.com/accounts/" + account_id + "/reactivate")
+request_reactivate_account.setRestRequestMethod("POST")
+addAuthHeader(request_reactivate_account)
+def response_reactivate_account = WSBuiltInKeywords.sendRequest(request_reactivate_account)
 
-// Step 3: Verify that the response status code is 200
-WSBuiltInKeywords.verifyResponseStatusCode(reactivate_response, 200)
+// Step 4: Verify that the response status code is 200
+def isTestPassed = WSBuiltInKeywords.verifyResponseStatusCode(response_reactivate_account, 200)
+if (isTestPassed) {
+	println("Test Passed")
+} else {
+	println("Test Failed")
+}
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)

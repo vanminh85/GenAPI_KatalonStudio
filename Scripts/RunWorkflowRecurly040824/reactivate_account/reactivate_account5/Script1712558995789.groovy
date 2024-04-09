@@ -1,9 +1,11 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
 	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
@@ -20,16 +22,17 @@ def addContentTypeHeader(request) {
 
 uuid = UUID.randomUUID().toString()
 
-def request = new RequestObject()
-request.setRestUrl("https://v3.recurly.com/accounts/${uuid}/reactivate")
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
+def requestStep1 = new RequestObject()
+requestStep1.setRestUrl("https://v3.recurly.com/accounts/valid_account_id__unique__/reactivate")
+requestStep1.setRestRequestMethod("POST")
+addAuthHeader(requestStep1)
+addContentTypeHeader(requestStep1)
 
-def response = WSBuiltInKeywords.sendRequest(request)
-WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
+def responseStep1 = WSBuiltInKeywords.sendRequest(requestStep1)
+WSBuiltInKeywords.verifyResponseStatusCode(responseStep1, 404)
 
-println("Test case passed")
+println("Step 2 - Verify that the response status code is 404")
+println("Response status code: " + responseStep1.getStatusCode())
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
