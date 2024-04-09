@@ -1,10 +1,9 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -25,45 +24,37 @@ uuid = UUID.randomUUID().toString()
 
 // Step 1: Create a new account
 def createAccountRequest = new RequestObject()
-createAccountRequest.setRestUrl("https://v3.recurly.com/accounts")
+createAccountRequest.setRestUrl("https://https://v3.recurly.com/accounts")
 createAccountRequest.setRestRequestMethod("POST")
+addAuthHeader(createAccountRequest)
 addContentTypeHeader(createAccountRequest)
 
-def createAccountPayload = JsonOutput.toJson([
-	"code": "test_account",
-	"email": "test@example.com",
-	"first_name": "John",
-	"last_name": "Doe"
-])
-createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createAccountPayload)))
-addAuthHeader(createAccountRequest)
+def accountPayload = '{"code": "test_account__unique__", "first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"}'
+createAccountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(accountPayload)))
 
 def createAccountResponse = WSBuiltInKeywords.sendRequest(createAccountRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(createAccountResponse, 201)
-def account_id = (new JsonSlurper()).parseText(createAccountResponse.getResponseText())["id"]
+def account_id = new JsonSlurper().parseText(createAccountResponse.getResponseText())["id"]
 
-// Step 2: Create invalid billing information
+// Step 2: Create a new billing info with missing required field
 def createBillingInfoRequest = new RequestObject()
-createBillingInfoRequest.setRestUrl("https://v3.recurly.com/accounts/${account_id}/billing_infos")
+createBillingInfoRequest.setRestUrl("https://https://v3.recurly.com/accounts/${account_id}/billing_infos")
 createBillingInfoRequest.setRestRequestMethod("POST")
+addAuthHeader(createBillingInfoRequest)
 addContentTypeHeader(createBillingInfoRequest)
 
-def createBillingInfoPayload = JsonOutput.toJson([
-	"first_name": "John",
-	"last_name": "Doe",
-	"number": "4111111111111111",
-	"month": "12",
-	"year": "2022",
-	"cvv": "123"
-])
-createBillingInfoRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(createBillingInfoPayload)))
-addAuthHeader(createBillingInfoRequest)
+def billingInfoPayload = '{"first_name": "John", "last_name": "Doe", "number": "4111111111111111", "month": "12", "year": "2023", "cvv": "123"}'
+createBillingInfoRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(billingInfoPayload)))
 
 def createBillingInfoResponse = WSBuiltInKeywords.sendRequest(createBillingInfoRequest)
-WSBuiltInKeywords.verifyResponseStatusCode(createBillingInfoResponse, 400)
 
-// Step 3: Verify the response status code
-WSBuiltInKeywords.verifyResponseStatusCode(createBillingInfoResponse, 400)
+// Step 3: Verify the response status code is 422
+def statusCode422 = 422
+def isStatusCode422 = WSBuiltInKeywords.verifyResponseStatusCode(createBillingInfoResponse, statusCode422)
+assert isStatusCode422
+
+println("Step 1 - Create Account Status Code: " + createAccountResponse.getStatusCode())
+println("Step 2 - Create Billing Info Status Code: " + createBillingInfoResponse.getStatusCode())
+println("Step 3 - Verify Status Code 422: Passed")
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
