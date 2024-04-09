@@ -1,21 +1,12 @@
+import internal.GlobalVariable
 import com.kms.katalon.core.testobject.ConditionType
-import com.kms.katalon.core.testobject.RequestObject
 import com.kms.katalon.core.testobject.TestObjectProperty
+import com.kms.katalon.core.testobject.RequestObject
 import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-import internal.GlobalVariable
-
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 
-import java.util.UUID
-
-import static org.assertj.core.api.Assertions.*
-
-// Import GlobalVariable
-import internal.GlobalVariable
-
-// Define addAuthHeader function
 def addAuthHeader(request) {
 	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
 	if (authToken) {
@@ -24,63 +15,53 @@ def addAuthHeader(request) {
 	}
 }
 
-// Define addContentTypeHeader function
 def addContentTypeHeader(request) {
 	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
 	request.getHttpHeaderProperties().add(content_type_header)
 }
 
-// Define uuid variable
 uuid = UUID.randomUUID().toString()
 
-// Step 1: Create a new AccountAcquisitionUpdate resource with valid data
-def acquisition_update_payload = [
-	"cost": [
-		"currency": "USD",
-		"amount": 10.0
-	],
-	"channel": "advertising",
-	"subchannel": "online",
-	"campaign": "test_campaign__unique__"
-]
+// Step 1: Create a new account
+def accountRequest = new RequestObject()
+accountRequest.setRestUrl("https://v3.recurly.com/accounts")
+accountRequest.setRestRequestMethod("POST")
+addAuthHeader(accountRequest)
+addContentTypeHeader(accountRequest)
 
-def acquisition_update_request = new RequestObject()
-acquisition_update_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(acquisition_update_payload))))
-acquisition_update_request.setRestUrl(GlobalVariable.base_url + "/accounts/{account_id}/acquisition")
-acquisition_update_request.setRestRequestMethod("PUT")
-addAuthHeader(acquisition_update_request)
-addContentTypeHeader(acquisition_update_request)
+def accountPayload = '{"code": "test_account__unique__", "email": "test@example.com", "first_name": "John", "last_name": "Doe"}'
+accountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(accountPayload)))
 
-def acquisition_update_response = WSBuiltInKeywords.sendRequest(acquisition_update_request)
-WSBuiltInKeywords.verifyResponseStatusCode(acquisition_update_response, 200)
+def accountResponse = WSBuiltInKeywords.sendRequest(accountRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(accountResponse, 201)
 
-// Step 2: Create a new campaign resource with valid data
-def campaign_payload = [
-	"name": "test_campaign__unique__"
-]
+def accountId = new JsonSlurper().parseText(accountResponse.getResponseText())["id"]
 
-def campaign_request = new RequestObject()
-campaign_request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(campaign_payload))))
-campaign_request.setRestUrl(GlobalVariable.base_url + "/campaigns")
-campaign_request.setRestRequestMethod("POST")
-addAuthHeader(campaign_request)
-addContentTypeHeader(campaign_request)
+// Step 2: Create account acquisition data
+def acquisitionRequest = new RequestObject()
+acquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/${accountId}/acquisition")
+acquisitionRequest.setRestRequestMethod("POST")
+addAuthHeader(acquisitionRequest)
+addContentTypeHeader(acquisitionRequest)
 
-def campaign_response = WSBuiltInKeywords.sendRequest(campaign_request)
-WSBuiltInKeywords.verifyResponseStatusCode(campaign_response, 200)
+def acquisitionPayload = '{"cost": {"currency": "USD", "amount": 100.0}, "channel": "direct_traffic", "subchannel": "online", "campaign": "summer_sale"}'
+acquisitionRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(acquisitionPayload)))
 
-// Step 3: Call the API POST /accounts/{account_id}/acquisition without providing the account_id parameter
-def invalid_acquisition_request = new RequestObject()
-invalid_acquisition_request.setRestUrl(GlobalVariable.base_url + "/accounts/acquisition")
-invalid_acquisition_request.setRestRequestMethod("POST")
-addAuthHeader(invalid_acquisition_request)
-addContentTypeHeader(invalid_acquisition_request)
+def acquisitionResponse = WSBuiltInKeywords.sendRequest(acquisitionRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(acquisitionResponse, 201)
 
-def invalid_acquisition_response = WSBuiltInKeywords.sendRequest(invalid_acquisition_request)
-WSBuiltInKeywords.verifyResponseStatusCode(invalid_acquisition_response, 404)
+// Step 3: Update account acquisition data
+def updatedAcquisitionRequest = new RequestObject()
+updatedAcquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/${accountId}/acquisition")
+updatedAcquisitionRequest.setRestRequestMethod("PUT")
+addAuthHeader(updatedAcquisitionRequest)
+addContentTypeHeader(updatedAcquisitionRequest)
 
-// Step 4: Verify that the response status code is 404
-assertThat(invalid_acquisition_response.getStatusCode()).isEqualTo(404)
+def updatedAcquisitionPayload = '{"cost": {"currency": "USD", "amount": 150.0}, "channel": "paid_search", "subchannel": "google_ads", "campaign": "fall_promo"}'
+updatedAcquisitionRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(updatedAcquisitionPayload)))
+
+def updatedAcquisitionResponse = WSBuiltInKeywords.sendRequest(updatedAcquisitionRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(updatedAcquisitionResponse, 200)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
