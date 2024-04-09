@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCaseEntity>
    <description></description>
-   <name>trung</name>
+   <name>updateTag4</name>
    <tag></tag>
    <comment></comment>
-   <testCaseGuid>f40df630-8e94-40d4-8499-3564ef180cfa</testCaseGuid>
+   <testCaseGuid>60c7e146-8860-4deb-95e9-e3af94d31b84</testCaseGuid>
 </TestCaseEntity>
