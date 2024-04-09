@@ -1,47 +1,66 @@
 import internal.GlobalVariable
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def addAuthHeader(request) {
-	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
 	if (authToken) {
-		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
 		request.getHttpHeaderProperties().add(auth_header)
 	}
 }
 
 def addContentTypeHeader(request) {
-	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
 	request.getHttpHeaderProperties().add(content_type_header)
 }
 
 uuid = UUID.randomUUID().toString()
 
-def base_url = "https://v3.recurly.com"
+// Step 1: Create a new account
+accountRequest = new RequestObject()
+accountRequest.setRestUrl("https://v3.recurly.com/accounts")
+accountRequest.setRestRequestMethod("POST")
+addAuthHeader(accountRequest)
+addContentTypeHeader(accountRequest)
 
-// Step 1: Call the API POST /accounts/{account_id}/acquisition
-def account_id = "valid_account_id"
-def url = "${base_url}/accounts/${account_id}/acquisition"
-def request = new RequestObject()
-request.setRestUrl(url)
-request.setRestRequestMethod("POST")
-addAuthHeader(request)
-addContentTypeHeader(request)
-def payload = "{}"
-request.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(payload)))
+account_payload = '{"code": "test_account__unique__", "acquisition": {"cost": {"currency": "USD", "amount": 100.0}, "channel": "email", "subchannel": "marketing", "campaign": "summer_sale"}, "shipping_addresses": []}'
+accountRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(account_payload)))
 
-def response = WSBuiltInKeywords.sendRequest(request)
+accountResponse = WSBuiltInKeywords.sendRequest(accountRequest)
+account_id = new JsonSlurper().parseText(accountResponse.getResponseText())["id"]
 
-// Step 2: Verify that the response status code is 400
-WSBuiltInKeywords.verifyResponseStatusCode(response, 400)
+// Step 3: Create acquisition data for the account
+acquisitionRequest = new RequestObject()
+acquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/" + account_id + "/acquisition")
+acquisitionRequest.setRestRequestMethod("POST")
+addAuthHeader(acquisitionRequest)
+addContentTypeHeader(acquisitionRequest)
 
-println("Test case passed: test_post_missingAccountAcquisitionUpdate_returns400")
+acquisition_payload = '{"cost": {"currency": "USD", "amount": 150.0}, "channel": "social_media", "subchannel": "advertising", "campaign": "holiday_promo"}'
+acquisitionRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(acquisition_payload)))
+
+acquisitionResponse = WSBuiltInKeywords.sendRequest(acquisitionRequest)
+
+// Step 4: Update acquisition data for the account
+updatedAcquisitionRequest = new RequestObject()
+updatedAcquisitionRequest.setRestUrl("https://v3.recurly.com/accounts/" + account_id + "/acquisition")
+updatedAcquisitionRequest.setRestRequestMethod("PUT")
+addAuthHeader(updatedAcquisitionRequest)
+addContentTypeHeader(updatedAcquisitionRequest)
+
+updated_acquisition_payload = '{"cost": {"currency": "USD", "amount": 200.0}, "channel": "referral", "subchannel": "customer_referral", "campaign": "loyalty_program"}'
+updatedAcquisitionRequest.setBodyContent(new HttpTextBodyContent(replaceSuffixWithUUID(updated_acquisition_payload)))
+
+updatedAcquisitionResponse = WSBuiltInKeywords.sendRequest(updatedAcquisitionRequest)
+
+// Step 5: Verify response status code is 200
+WSBuiltInKeywords.verifyResponseStatusCode(updatedAcquisitionResponse, 200)
 
 def replaceSuffixWithUUID(payload) {
 	replacedString = payload.replaceAll('unique__', uuid)
