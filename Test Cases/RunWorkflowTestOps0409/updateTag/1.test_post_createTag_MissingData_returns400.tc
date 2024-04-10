@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCaseEntity>
    <description></description>
-   <name>updateTag1</name>
+   <name>1.test_post_createTag_MissingData_returns400</name>
    <tag></tag>
    <comment></comment>
    <testCaseGuid>3ffe8471-4e3e-4814-a7a6-d0fed12c2212</testCaseGuid>
