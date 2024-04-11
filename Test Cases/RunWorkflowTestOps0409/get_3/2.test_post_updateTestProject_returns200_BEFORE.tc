@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCaseEntity>
    <description></description>
-   <name>4.test_post_getTestProject_returns200</name>
+   <name>2.test_post_updateTestProject_returns200_BEFORE</name>
    <tag></tag>
    <comment></comment>
-   <testCaseGuid>f58d1acd-4fe4-4c0e-aa4a-f24e9483899f</testCaseGuid>
+   <testCaseGuid>76c26cb1-d2f7-43f8-af5f-13071f7d7e76</testCaseGuid>
 </TestCaseEntity>
