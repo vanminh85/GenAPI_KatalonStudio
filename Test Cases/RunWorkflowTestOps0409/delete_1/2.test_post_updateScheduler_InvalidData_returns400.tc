@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCaseEntity>
    <description></description>
-   <name>5</name>
+   <name>2.test_post_updateScheduler_InvalidData_returns400</name>
    <tag></tag>
    <comment></comment>
-   <testCaseGuid>b5590d7b-a099-45bc-b5f6-a538e60aff4f</testCaseGuid>
+   <testCaseGuid>daf51131-c76f-4481-b2f3-a1d426825328</testCaseGuid>
 </TestCaseEntity>
