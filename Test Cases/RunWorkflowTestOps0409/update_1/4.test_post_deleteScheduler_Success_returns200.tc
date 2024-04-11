@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_deleteScheduler_Success_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>cdef5b58-37c9-45d1-8ad2-4436923a4a80</testCaseGuid>
+</TestCaseEntity>

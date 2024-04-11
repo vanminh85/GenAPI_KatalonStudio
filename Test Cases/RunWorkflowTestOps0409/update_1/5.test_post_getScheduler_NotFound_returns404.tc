@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>5.test_post_getScheduler_NotFound_returns404</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>af052218-1a8d-4794-b687-6f335222541b</testCaseGuid>
+</TestCaseEntity>

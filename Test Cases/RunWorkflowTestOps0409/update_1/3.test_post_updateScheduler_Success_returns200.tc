@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>3.test_post_updateScheduler_Success_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>c7185f74-9f9e-4e2c-b5aa-b64895eb5ba1</testCaseGuid>
+</TestCaseEntity>

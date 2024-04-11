@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>2.test_post_createScheduler_MissingRequiredField_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>0b29dabd-6024-4b83-bf30-ebea127fef4d</testCaseGuid>
+</TestCaseEntity>
