@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_createScheduler_ValidData_returns200_AFTER</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>9c71dbe1-b6ab-409d-933f-dd6e06932922</testCaseGuid>
+</TestCaseEntity>

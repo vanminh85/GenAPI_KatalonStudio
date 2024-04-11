@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>5.test_post_updateScriptRepo_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>c547e4dd-405c-4e39-8cdb-b80834dd8ad4</testCaseGuid>
+</TestCaseEntity>

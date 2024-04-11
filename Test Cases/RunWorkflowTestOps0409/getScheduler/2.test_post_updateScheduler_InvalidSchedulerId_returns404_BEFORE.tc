@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>2.test_post_updateScheduler_InvalidSchedulerId_returns404_BEFORE</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f5f19cb8-15cd-4216-94e2-f864f5ab8742</testCaseGuid>
+</TestCaseEntity>
