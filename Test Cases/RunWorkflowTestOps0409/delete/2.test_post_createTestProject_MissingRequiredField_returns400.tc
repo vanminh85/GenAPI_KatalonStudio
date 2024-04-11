@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>2.test_post_createTestProject_MissingRequiredField_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>93fecb5b-5366-4a2f-af9b-e7c7f6f01052</testCaseGuid>
+</TestCaseEntity>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_deleteTestProject_ExistingId_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>b97dc2d5-27fc-4972-94a0-6ee24ac14c1f</testCaseGuid>
+</TestCaseEntity>
