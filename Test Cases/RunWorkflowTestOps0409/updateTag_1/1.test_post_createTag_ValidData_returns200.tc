@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_createTag_ValidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ea8cefaf-98c9-4e6a-938c-59a755dce9aa</testCaseGuid>
+</TestCaseEntity>
