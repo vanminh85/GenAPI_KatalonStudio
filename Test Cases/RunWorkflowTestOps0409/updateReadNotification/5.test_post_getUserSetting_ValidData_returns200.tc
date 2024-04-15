@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>5.test_post_getUserSetting_ValidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>28f38397-9f9c-4351-b396-9a690abaf136</testCaseGuid>
+</TestCaseEntity>
