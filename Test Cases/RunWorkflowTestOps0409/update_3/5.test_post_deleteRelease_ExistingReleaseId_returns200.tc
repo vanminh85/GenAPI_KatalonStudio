@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>5.test_post_deleteRelease_ExistingReleaseId_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f791377a-fc1e-4793-9279-29dd57a1e407</testCaseGuid>
+</TestCaseEntity>
