@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_createProject_AutoIntegrateTrue_returns201</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>b8c0d4f2-8b58-4b96-8efb-0239654d883b</testCaseGuid>
+</TestCaseEntity>
