@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>2.test_post_invalidProjectStatusUpdate_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ff9c6f74-1522-4ce3-a44d-1d9b2ab51df7</testCaseGuid>
+</TestCaseEntity>
