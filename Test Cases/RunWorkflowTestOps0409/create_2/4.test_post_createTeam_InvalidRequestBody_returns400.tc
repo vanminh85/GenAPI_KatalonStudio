@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_createTeam_InvalidRequestBody_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>a1e27ad8-674a-4e84-82db-d33c869d0317</testCaseGuid>
+</TestCaseEntity>
