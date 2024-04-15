@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_createTeam_ValidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>eeea9b8d-a7d0-4ca3-adfe-0b114f351bea</testCaseGuid>
+</TestCaseEntity>
