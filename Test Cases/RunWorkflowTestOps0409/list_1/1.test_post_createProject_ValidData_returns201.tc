@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_createProject_ValidData_returns201</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>3a946348-dc80-4923-8c26-bed96efba90c</testCaseGuid>
+</TestCaseEntity>
