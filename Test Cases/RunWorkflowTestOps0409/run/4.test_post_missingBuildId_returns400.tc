@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_missingBuildId_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>37a9ef64-e05f-4c42-99e7-29bc54ed0d62</testCaseGuid>
+</TestCaseEntity>

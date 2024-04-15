@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>3.test_post_invalidBuildId_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>62bdd690-14ac-4026-8fe5-f2382db511cf</testCaseGuid>
+</TestCaseEntity>

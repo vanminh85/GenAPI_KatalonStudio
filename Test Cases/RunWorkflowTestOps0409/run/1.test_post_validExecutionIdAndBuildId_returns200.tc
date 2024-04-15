@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_validExecutionIdAndBuildId_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f6ebac88-9744-489c-8d2b-6aa82f882f08</testCaseGuid>
+</TestCaseEntity>
