@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_createTeam_InvalidRole_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>22d78ec4-a26b-4020-9838-dfc1eec4dddb</testCaseGuid>
+</TestCaseEntity>
