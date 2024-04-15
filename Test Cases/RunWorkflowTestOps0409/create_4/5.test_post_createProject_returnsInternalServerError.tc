@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>5.test_post_createProject_returnsInternalServerError</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>e471db95-ea3c-4f76-a36b-fcf1553f8e88</testCaseGuid>
+</TestCaseEntity>
