@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>2.test_post_createIncident_MissingData_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>68b7c94b-7da0-4a5c-948b-5d8cca145418</testCaseGuid>
+</TestCaseEntity>

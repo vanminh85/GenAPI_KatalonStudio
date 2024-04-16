@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_createIncident_ValidData_returns201</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>1784020c-2461-45b7-9369-10b6edb7c7d9</testCaseGuid>
+</TestCaseEntity>
