@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_createK8SAgent_InvalidAuthenticationType_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ee451e93-1704-4d9b-ac64-347085c64b77</testCaseGuid>
+</TestCaseEntity>

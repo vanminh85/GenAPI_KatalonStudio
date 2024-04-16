@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>2.test_post_createK8SAgent_MissingRequiredField_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>7be92204-f250-4e4c-aa8b-9f8928934106</testCaseGuid>
+</TestCaseEntity>
