@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>4.test_post_createIncident_InvalidRequestBody_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>c6478d77-ceed-4c4e-8bb4-192d89fad255</testCaseGuid>
+</TestCaseEntity>
