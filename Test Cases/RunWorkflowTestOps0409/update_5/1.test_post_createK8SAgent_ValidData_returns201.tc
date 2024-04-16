@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_createK8SAgent_ValidData_returns201</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>50334c15-9d94-47c3-9434-6c7a6da0898c</testCaseGuid>
+</TestCaseEntity>
