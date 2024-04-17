@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createComment_ValidData_returns201</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>5644e393-6563-4799-8d05-7a747d1323d0</testCaseGuid>
+</TestCaseEntity>

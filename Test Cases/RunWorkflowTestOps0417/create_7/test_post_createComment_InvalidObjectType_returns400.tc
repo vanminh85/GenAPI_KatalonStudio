@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createComment_InvalidObjectType_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>e5bb6117-6404-4c58-a33d-aab0a12de0c2</testCaseGuid>
+</TestCaseEntity>
