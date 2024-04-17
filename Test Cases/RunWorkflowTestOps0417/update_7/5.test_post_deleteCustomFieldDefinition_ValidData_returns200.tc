@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>5.test_post_deleteCustomFieldDefinition_ValidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>c4ca7c18-6246-4e3f-ac14-67bc6e9a6757</testCaseGuid>
+</TestCaseEntity>

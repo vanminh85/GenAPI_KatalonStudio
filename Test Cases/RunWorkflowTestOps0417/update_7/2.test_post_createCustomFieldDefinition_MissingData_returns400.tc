@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>2.test_post_createCustomFieldDefinition_MissingData_returns400</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>abd47547-9b40-44b1-90f0-6842618e519b</testCaseGuid>
+</TestCaseEntity>
