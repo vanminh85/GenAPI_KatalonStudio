@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_getCircleCIAgent_ExistingAgentId_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>23d8bf38-7a79-4d8c-914e-3a7fb9e779d8</testCaseGuid>
+</TestCaseEntity>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_updateCircleCIAgent_Success_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>fa970b12-9700-43c0-ada6-411db2487b82</testCaseGuid>
+</TestCaseEntity>
