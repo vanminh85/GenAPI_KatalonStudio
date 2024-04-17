@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>1.test_post_createCustomFieldDefinition_ValidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>03a76497-b52e-41d3-aecf-ed19d2fe92ae</testCaseGuid>
+</TestCaseEntity>
