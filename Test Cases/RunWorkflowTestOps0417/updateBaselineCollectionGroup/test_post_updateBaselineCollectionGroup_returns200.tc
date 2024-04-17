@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_updateBaselineCollectionGroup_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>cc385d60-80bb-4ce3-b869-f479fe2844f4</testCaseGuid>
+</TestCaseEntity>
