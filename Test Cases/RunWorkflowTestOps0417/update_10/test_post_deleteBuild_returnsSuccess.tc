@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_deleteBuild_returnsSuccess</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>c075ed40-7bf7-4ea3-a1fb-8af15c9a01d7</testCaseGuid>
+</TestCaseEntity>

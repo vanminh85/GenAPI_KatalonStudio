@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_updateBuild_returns404</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>35ed9f62-3be1-45e5-986e-757dbc647ca9</testCaseGuid>
+</TestCaseEntity>
