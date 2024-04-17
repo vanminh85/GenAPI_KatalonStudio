@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>5.test_post_createTag_DuplicateTag_returns409</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>cbf5843e-7604-4233-99c9-33714a5a3631</testCaseGuid>
+</TestCaseEntity>
