@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_updateBuild_InvalidId_returns404</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>9b4d517f-6cc6-4507-ace5-7bb8c6cb3d26</testCaseGuid>
+</TestCaseEntity>

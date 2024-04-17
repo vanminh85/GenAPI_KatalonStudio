@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_deleteBuild_ValidId_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>a4b5a039-4bef-4999-8d82-a68ac624854b</testCaseGuid>
+</TestCaseEntity>
