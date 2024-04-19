@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_changeAvatar_ValidUploadedPath_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>fcd868cf-b4ff-4408-9809-ff9d9a986d40</testCaseGuid>
+</TestCaseEntity>

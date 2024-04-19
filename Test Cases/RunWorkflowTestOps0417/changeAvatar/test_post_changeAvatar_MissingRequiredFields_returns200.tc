@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_changeAvatar_MissingRequiredFields_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>86ad2960-f3d3-48a2-b855-86218dcb2f42</testCaseGuid>
+</TestCaseEntity>

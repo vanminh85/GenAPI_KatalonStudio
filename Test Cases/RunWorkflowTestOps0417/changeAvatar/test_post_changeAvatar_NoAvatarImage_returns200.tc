@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_changeAvatar_NoAvatarImage_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>beed2335-549e-4c6a-a3c2-25899303e93b</testCaseGuid>
+</TestCaseEntity>

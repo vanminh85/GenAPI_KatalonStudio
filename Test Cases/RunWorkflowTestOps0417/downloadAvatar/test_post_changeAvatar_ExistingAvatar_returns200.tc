@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_changeAvatar_ExistingAvatar_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>abfe6112-6819-43cc-8928-7a67cf1cf481</testCaseGuid>
+</TestCaseEntity>
