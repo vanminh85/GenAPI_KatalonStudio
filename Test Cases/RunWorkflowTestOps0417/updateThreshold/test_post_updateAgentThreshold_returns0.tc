@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_updateAgentThreshold_returns0</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>bd0a01d6-99e2-4c31-bd17-8831ca7dbf8b</testCaseGuid>
+</TestCaseEntity>

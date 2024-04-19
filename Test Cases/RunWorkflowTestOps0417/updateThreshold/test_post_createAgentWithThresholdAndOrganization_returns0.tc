@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createAgentWithThresholdAndOrganization_returns0</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>d0fcd61b-3538-4009-a0a2-c4dbafa55bbe</testCaseGuid>
+</TestCaseEntity>

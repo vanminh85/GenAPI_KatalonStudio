@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createUserWithInvalidSessionTimeout_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f1731960-1750-456b-a646-8a639683e3b3</testCaseGuid>
+</TestCaseEntity>
