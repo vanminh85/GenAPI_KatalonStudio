@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createOrganizationResource_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>27cba3d4-1654-4683-b8f6-d29394fc4fa0</testCaseGuid>
+</TestCaseEntity>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createProjectResource_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f90f57cf-9a03-4960-b4a7-b0d7c9076468</testCaseGuid>
+</TestCaseEntity>
