@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_getIncidentExecutionTestResultResource_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ae7c5035-cca6-41c0-a2b8-eb4143a27516</testCaseGuid>
+</TestCaseEntity>
