@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_newFileResource_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>6cc17421-f068-40cd-8c03-3078f54d075d</testCaseGuid>
+</TestCaseEntity>

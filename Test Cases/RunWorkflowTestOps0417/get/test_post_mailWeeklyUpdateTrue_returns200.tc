@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_mailWeeklyUpdateTrue_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>9376420e-f29b-4c6d-9651-abd6cf93ad01</testCaseGuid>
+</TestCaseEntity>

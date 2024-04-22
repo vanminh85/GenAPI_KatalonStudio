@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_existingUserIdsArray_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>1988c68f-4b4b-4dcf-9ba7-e8d796c05b99</testCaseGuid>
+</TestCaseEntity>

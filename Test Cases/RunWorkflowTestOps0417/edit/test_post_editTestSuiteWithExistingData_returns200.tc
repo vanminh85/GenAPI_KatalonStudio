@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_editTestSuiteWithExistingData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>6146971f-4272-473b-a735-a3fd2984e93c</testCaseGuid>
+</TestCaseEntity>

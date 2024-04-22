@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_mailJobStartTrue_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>c77a0099-9a45-4439-8bf3-d82049865e95</testCaseGuid>
+</TestCaseEntity>

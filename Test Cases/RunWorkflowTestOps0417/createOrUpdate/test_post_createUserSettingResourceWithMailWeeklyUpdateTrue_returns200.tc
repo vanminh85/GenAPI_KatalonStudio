@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createUserSettingResourceWithMailWeeklyUpdateTrue_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>bf418fc3-fef9-4193-9cef-f7fe88956d6c</testCaseGuid>
+</TestCaseEntity>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_newUploadFileResource_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>52753abc-476b-43ec-96c1-4c3fa663f010</testCaseGuid>
+</TestCaseEntity>
