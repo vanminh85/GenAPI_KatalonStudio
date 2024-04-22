@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_linkExecutionTestResultToIncident_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>bbc29917-ee1f-484f-a6dc-e5659cc4fd86</testCaseGuid>
+</TestCaseEntity>

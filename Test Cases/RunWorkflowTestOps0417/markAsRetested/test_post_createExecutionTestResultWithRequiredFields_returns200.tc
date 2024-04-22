@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createExecutionTestResultWithRequiredFields_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>a7e70b48-5663-4df0-bdb5-8dd8ee0c9f62</testCaseGuid>
+</TestCaseEntity>
