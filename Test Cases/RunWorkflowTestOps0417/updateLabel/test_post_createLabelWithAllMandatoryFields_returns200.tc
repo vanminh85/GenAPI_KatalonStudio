@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createLabelWithAllMandatoryFields_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>bec5d36c-8ba6-4bc2-bca4-d4a1a6cf6f1b</testCaseGuid>
+</TestCaseEntity>

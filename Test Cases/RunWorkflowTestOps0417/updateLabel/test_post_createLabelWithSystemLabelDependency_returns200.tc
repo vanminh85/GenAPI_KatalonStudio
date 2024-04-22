@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createLabelWithSystemLabelDependency_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>e281d924-6e51-44ab-8dd9-bbae659f2532</testCaseGuid>
+</TestCaseEntity>
