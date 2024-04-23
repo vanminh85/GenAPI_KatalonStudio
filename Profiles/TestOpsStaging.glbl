@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalVariableEntities>
+   <description></description>
+   <name>TestOpsStaging</name>
+   <tag></tag>
+   <defaultProfile>true</defaultProfile>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI4YTY4OGM4OS1iMjg0LTQ5YzMtOGUxNi0yODYzYzY0ZjFjOGIifQ.eyJleHAiOjE3MTQ0NTI0MDYsImlhdCI6MTcxMzg0NzYwOCwianRpIjoiOTVlM2JmMTUtNjJkOS00Y2Y5LWE1OWMtNGQyM2Y3OGY0YzQ1IiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5zdGFnaW5nLmthdGFsb24uY29tL3JlYWxtcy9rYXRhbG9uIiwiYXVkIjoiaHR0cHM6Ly9sb2dpbi5zdGFnaW5nLmthdGFsb24uY29tL3JlYWxtcy9rYXRhbG9uIiwic3ViIjoiZmE2YzM5ZmUtNTE3Mi00YzVhLTg2NDAtOGFmMjBkYzIwYjQyIiwidHlwIjoiUmVmcmVzaCIsImF6cCI6ImthdGFsb24tdGVzdG9wcyIsInNlc3Npb25fc3RhdGUiOiJhMGVkNWIzZS0zY2UwLTRhNjMtOTRlNS1iOTllZDAxZmZlY2MiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwic2lkIjoiYTBlZDViM2UtM2NlMC00YTYzLTk0ZTUtYjk5ZWQwMWZmZWNjIn0.DA4xxGXjsCByT5b-qwq3ZA6sh3YjurynQKDEzFJcF4Q'</initValue>
+      <name>katalon_ai_api_auth_value</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'https://testops.staging.katalon.com/api/v1/users/token'</initValue>
+      <name>url</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'https://testops.staging.katalon.com'</initValue>
+      <name>base_url</name>
+   </GlobalVariableEntity>
+</GlobalVariableEntities>
