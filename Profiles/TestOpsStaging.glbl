@@ -11,11 +11,6 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>'https://testops.staging.katalon.com/api/v1/users/token'</initValue>
-      <name>url</name>
-   </GlobalVariableEntity>
-   <GlobalVariableEntity>
-      <description></description>
       <initValue>'https://testops.staging.katalon.com'</initValue>
       <name>base_url</name>
    </GlobalVariableEntity>

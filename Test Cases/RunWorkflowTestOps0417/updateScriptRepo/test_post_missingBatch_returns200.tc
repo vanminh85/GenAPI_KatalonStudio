@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_missingBatch_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f3b699e5-f2d0-47f1-87dc-7017177c99ce</testCaseGuid>
+</TestCaseEntity>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_validBatchAndFolderPathAndFileNameAndUploadedPath_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ff197ed8-889a-4e27-81b3-bc90ce15db00</testCaseGuid>
+</TestCaseEntity>
