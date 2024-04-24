@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_CreateExecutionTestResultIdentifyResource_returns204</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>cc2596e2-2344-49c8-a611-19be43d6e091</testCaseGuid>
+</TestCaseEntity>
