@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_deleteTestProject_ValidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>29ca515a-f7b2-4991-b396-a54ed2d6a6e2</testCaseGuid>
+</TestCaseEntity>
