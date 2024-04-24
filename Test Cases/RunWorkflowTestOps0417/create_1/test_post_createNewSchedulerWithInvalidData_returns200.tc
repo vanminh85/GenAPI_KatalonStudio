@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createNewSchedulerWithInvalidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>a02d1895-e565-46c1-bb42-c252bc699a42</testCaseGuid>
+</TestCaseEntity>

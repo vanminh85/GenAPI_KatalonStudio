@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createNewSchedulerWithNonExistentProject_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>09f70236-e2dc-4d9f-9a3d-a0c4ba3d24b7</testCaseGuid>
+</TestCaseEntity>
