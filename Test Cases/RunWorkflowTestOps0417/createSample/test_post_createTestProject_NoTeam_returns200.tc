@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createTestProject_NoTeam_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>6ac01886-1504-414e-9fdf-93f9d95ec479</testCaseGuid>
+</TestCaseEntity>

@@ -1,0 +1,75 @@
+import internal.GlobalVariable
+import com.kms.katalon.core.testobject.ConditionType
+import com.kms.katalon.core.testobject.TestObjectProperty
+import com.kms.katalon.core.testobject.RequestObject
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
+import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+def addAuthHeader(request) {
+	def authToken = "${GlobalVariable.katalon_ai_api_auth_value}" ?: null
+	if (authToken) {
+		def auth_header = new TestObjectProperty("authorization", ConditionType.EQUALS, authToken)
+		request.getHttpHeaderProperties().add(auth_header)
+	}
+}
+
+def addContentTypeHeader(request) {
+	def content_type_header = new TestObjectProperty("content-type", ConditionType.EQUALS, "application/json")
+	request.getHttpHeaderProperties().add(content_type_header)
+}
+
+uuid = UUID.randomUUID().toString()
+
+// Step 1: Create a new Team
+def teamRequest = new RequestObject()
+teamRequest.setRestUrl("https://testops.katalon.io/api/v1/teams")
+teamRequest.setRestRequestMethod("POST")
+addAuthHeader(teamRequest)
+addContentTypeHeader(teamRequest)
+def teamPayload = new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(["name": "TeamName__unique__", "role": "OWNER"])))
+teamRequest.setBodyContent(teamPayload)
+def teamResponse = WSBuiltInKeywords.sendRequest(teamRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(teamResponse, 200)
+
+// Step 2: Create a new Project
+def teamId = new JsonSlurper().parseText(teamResponse.getResponseText())["id"]
+def projectRequest = new RequestObject()
+projectRequest.setRestUrl("https://testops.katalon.io/api/v1/projects")
+projectRequest.setRestRequestMethod("POST")
+addAuthHeader(projectRequest)
+addContentTypeHeader(projectRequest)
+def projectPayload = new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(["name": "ProjectName__unique__", "teamId": teamId, "timezone": "UTC", "status": "ACTIVE"])))
+projectRequest.setBodyContent(projectPayload)
+def projectResponse = WSBuiltInKeywords.sendRequest(projectRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(projectResponse, 200)
+
+// Step 3: Create a new Git Repository
+def projectId = new JsonSlurper().parseText(projectResponse.getResponseText())["id"]
+def gitRepoRequest = new RequestObject()
+gitRepoRequest.setRestUrl("https://testops.katalon.io/api/v1/git/create")
+gitRepoRequest.setRestRequestMethod("POST")
+addAuthHeader(gitRepoRequest)
+addContentTypeHeader(gitRepoRequest)
+def gitRepoPayload = new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(["testProjectId": projectId, "name": "GitRepoName__unique__", "repository": "https://github.com/example", "branch": "main", "username": "username", "password": "password", "accessKeyId": "accessKeyId", "secretAccessKey": "secretAccessKey", "projectId": 1, "teamId": teamId])))
+gitRepoRequest.setBodyContent(gitRepoPayload)
+def gitRepoResponse = WSBuiltInKeywords.sendRequest(gitRepoRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(gitRepoResponse, 200)
+
+// Step 4: Create a new Test Project
+def testProjectRequest = new RequestObject()
+testProjectRequest.setRestUrl("https://testops.katalon.io/api/v1/test-projects/sample")
+testProjectRequest.setRestRequestMethod("POST")
+addAuthHeader(testProjectRequest)
+addContentTypeHeader(testProjectRequest)
+def testProjectPayload = new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJson(["name": "TestProjectName__unique__", "description": "TestProjectDescription", "defaultTestProject": true, "uploadFileId": 1, "projectId": projectId, "teamId": teamId, "type": "GIT", "gitRepository": ["id": projectId, "name": "GitRepoName__unique__"]])))
+testProjectRequest.setBodyContent(testProjectPayload)
+def testProjectResponse = WSBuiltInKeywords.sendRequest(testProjectRequest)
+WSBuiltInKeywords.verifyResponseStatusCode(testProjectResponse, 200)
+
+def replaceSuffixWithUUID(payload) {
+	replacedString = payload.replaceAll('unique__', uuid)
+	return replacedString
+}
+
