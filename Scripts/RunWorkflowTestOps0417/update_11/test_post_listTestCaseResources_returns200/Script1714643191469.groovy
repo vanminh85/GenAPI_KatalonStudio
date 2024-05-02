@@ -50,7 +50,7 @@ def payload_team = new HttpTextBodyContent(replaceSuffixWithUUID(JsonOutput.toJs
 	name: "Team__unique__",
 	role: "OWNER",
 	organizationId: new JsonSlurper()).parseText(response_org.getResponseText())['id']
-])))
+]))
 request_team.setBodyContent(payload_team)
 def response_team = WSBuiltInKeywords.sendRequest(request_team)
 WSBuiltInKeywords.verifyResponseStatusCode(response_team, 200)
