@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createTestProjectAndSchedulerAndPublish_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>a5fedf66-b853-4aed-8726-e76028b4109f</testCaseGuid>
+</TestCaseEntity>
