@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createTagWithExistingProjectAndOrganization_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ec8bf670-9f95-4385-9266-d08b56c82ae6</testCaseGuid>
+</TestCaseEntity>

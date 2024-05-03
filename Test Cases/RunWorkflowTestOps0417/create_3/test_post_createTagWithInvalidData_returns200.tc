@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createTagWithInvalidData_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f98b70eb-48b8-42a3-96ee-88b15e26e749</testCaseGuid>
+</TestCaseEntity>
