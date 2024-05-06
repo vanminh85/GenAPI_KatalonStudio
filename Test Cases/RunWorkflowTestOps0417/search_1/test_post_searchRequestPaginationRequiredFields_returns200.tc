@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_searchRequestPaginationRequiredFields_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>5ec25dc1-b45a-44d2-b08d-48e54c0d2b24</testCaseGuid>
+</TestCaseEntity>

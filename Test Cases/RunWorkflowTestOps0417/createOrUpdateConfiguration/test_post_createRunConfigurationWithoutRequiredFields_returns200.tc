@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createRunConfigurationWithoutRequiredFields_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f321cd74-e64a-457d-86cc-7e7e3cf6ff29</testCaseGuid>
+</TestCaseEntity>

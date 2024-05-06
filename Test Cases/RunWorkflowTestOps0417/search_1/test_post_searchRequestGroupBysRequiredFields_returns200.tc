@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_searchRequestGroupBysRequiredFields_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>e6e01c3b-fcbb-460c-b6e9-68f8970ed02f</testCaseGuid>
+</TestCaseEntity>
