@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createSmartSchedulerResourceAndSchedule_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>be35424e-5164-4b69-9b85-281b6e8bb3ab</testCaseGuid>
+</TestCaseEntity>

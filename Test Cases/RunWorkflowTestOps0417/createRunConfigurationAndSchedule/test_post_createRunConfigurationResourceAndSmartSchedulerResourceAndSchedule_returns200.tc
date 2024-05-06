@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createRunConfigurationResourceAndSmartSchedulerResourceAndSchedule_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>b37807db-358d-4288-936f-af17892a3b86</testCaseGuid>
+</TestCaseEntity>
