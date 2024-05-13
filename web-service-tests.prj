@@ -7,7 +7,8 @@
    <createdVersion>9.3.1</createdVersion>
    <freeLicense>false</freeLicense>
    <migratedVersion>5.9.0</migratedVersion>
-   <modifiedVersion>9.3.1</modifiedVersion>
+   <modifiedEdition>ENTERPRISE</modifiedEdition>
+   <modifiedVersion>9.4.0</modifiedVersion>
    <pageLoadTimeout>0</pageLoadTimeout>
    <projectFileLocation>C:\Users\minh.nguyen\Katalon Studio\API Automation\web-service-tests.prj</projectFileLocation>
    <sourceContent>

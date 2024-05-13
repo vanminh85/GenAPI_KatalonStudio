@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>test_post_createCustomFieldConditionForTesting_returns200</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>ab3f0eba-c290-47ee-adb5-be0dc17bea14</testCaseGuid>
+</TestCaseEntity>
